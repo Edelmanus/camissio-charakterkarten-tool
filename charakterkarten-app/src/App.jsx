@@ -1,20 +1,75 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getInitialState, saveToStorage, createKind } from './utils/storage';
+import { getInitialState, saveToStorage, createKind, loadAktivesCamp, saveAktivesCamp, clearAktivesCamp } from './utils/storage';
+import { getCampById } from './config/camps';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import KindEditor from './components/KindEditor';
 import Onboarding from './components/Onboarding';
 import AnleitungModal from './components/AnleitungModal';
 import LeereAnsicht from './components/LeereAnsicht';
+import CampAuswahl from './components/CampAuswahl';
+
+function useCampState(campId) {
+  const camp = getCampById(campId);
+  const [state, setState] = useState(() => getInitialState(camp.storageKey));
+
+  useEffect(() => {
+    saveToStorage(state, camp.storageKey);
+  }, [state, camp.storageKey]);
+
+  const reset = useCallback(() => {
+    setState(getInitialState(camp.storageKey));
+  }, [camp.storageKey]);
+
+  return [state, setState, reset];
+}
 
 export default function App() {
-  const [state, setState] = useState(getInitialState);
+  const [aktivescamp, setAktivescamp] = useState(() => loadAktivesCamp());
   const [anleitungOffen, setAnleitungOffen] = useState(false);
   const [sidebarOffen, setSidebarOffen] = useState(true);
 
+  const camp = getCampById(aktivescamp);
+
+  // CSS-Variablen für aktives Camp setzen
   useEffect(() => {
-    saveToStorage(state);
-  }, [state]);
+    if (!camp) return;
+    const root = document.documentElement;
+    root.style.setProperty('--camp-akzent', camp.farbe);
+    root.style.setProperty('--camp-akzent-hell', camp.farbeHell);
+    root.style.setProperty('--camp-akzent-text', camp.farbeText);
+  }, [camp]);
+
+  const campWechseln = useCallback((campId) => {
+    saveAktivesCamp(campId);
+    setAktivescamp(campId);
+    setSidebarOffen(true);
+  }, []);
+
+  const campVerlassen = useCallback(() => {
+    clearAktivesCamp();
+    setAktivescamp(null);
+  }, []);
+
+  // Kein Camp gewählt → Auswahl-Bildschirm
+  if (!camp) {
+    return <CampAuswahl onCampGewaehlt={campWechseln} />;
+  }
+
+  return (
+    <CampApp
+      camp={camp}
+      anleitungOffen={anleitungOffen}
+      setAnleitungOffen={setAnleitungOffen}
+      sidebarOffen={sidebarOffen}
+      setSidebarOffen={setSidebarOffen}
+      onCampVerlassen={campVerlassen}
+    />
+  );
+}
+
+function CampApp({ camp, anleitungOffen, setAnleitungOffen, sidebarOffen, setSidebarOffen, onCampVerlassen }) {
+  const [state, setState] = useCampState(camp.id);
 
   const aktiveKind = state.kinder.find(k => k.id === state.aktivesKindId) || null;
 
@@ -25,15 +80,13 @@ export default function App() {
       kinder: [...prev.kinder, kind],
       aktivesKindId: kind.id,
     }));
-    // Auf mobilen Geräten Sidebar nach Anlegen schließen
     if (window.innerWidth < 768) setSidebarOffen(false);
-  }, []);
+  }, [setState, setSidebarOffen]);
 
   const kindAktivieren = useCallback((id) => {
     setState(prev => ({ ...prev, aktivesKindId: id }));
-    // Auf mobilen Geräten Sidebar nach Auswahl schließen
     if (window.innerWidth < 768) setSidebarOffen(false);
-  }, []);
+  }, [setState, setSidebarOffen]);
 
   const kindLoeschen = useCallback((id) => {
     setState(prev => {
@@ -43,34 +96,35 @@ export default function App() {
         : null;
       return { ...prev, kinder: neueKinder, aktivesKindId: neuesAktives };
     });
-  }, []);
+  }, [setState]);
 
   const kindAktualisieren = useCallback((id, updates) => {
     setState(prev => ({
       ...prev,
       kinder: prev.kinder.map(k => k.id === id ? { ...k, ...updates } : k),
     }));
-  }, []);
+  }, [setState]);
 
   const onboardingAbschliessen = useCallback(() => {
     setState(prev => ({ ...prev, onboardingGesehen: true }));
-  }, []);
+  }, [setState]);
 
   if (!state.onboardingGesehen) {
-    return <Onboarding onWeiter={onboardingAbschliessen} />;
+    return <Onboarding camp={camp} onWeiter={onboardingAbschliessen} />;
   }
 
   return (
     <div className="min-h-screen bg-camissio-greige font-body">
       <Header
+        camp={camp}
         onAnleitung={() => setAnleitungOffen(true)}
         onSidebarToggle={() => setSidebarOffen(v => !v)}
         sidebarOffen={sidebarOffen}
         anzahlKinder={state.kinder.length}
+        onCampWechseln={onCampVerlassen}
       />
 
       <div className="flex" style={{ height: 'calc(100vh - 72px)' }}>
-        {/* Sidebar — auf mobilen Geräten overlay */}
         <div className={`
           shrink-0 transition-all duration-200
           md:relative md:translate-x-0
@@ -79,6 +133,7 @@ export default function App() {
           <Sidebar
             kinder={state.kinder}
             aktivesKindId={state.aktivesKindId}
+            camp={camp}
             onKindAktivieren={kindAktivieren}
             onNeuesKind={neuesKindAnlegen}
             onKindLoeschen={kindLoeschen}
@@ -89,6 +144,7 @@ export default function App() {
           {aktiveKind ? (
             <KindEditor
               kind={aktiveKind}
+              camp={camp}
               onUpdate={(updates) => kindAktualisieren(aktiveKind.id, updates)}
             />
           ) : (

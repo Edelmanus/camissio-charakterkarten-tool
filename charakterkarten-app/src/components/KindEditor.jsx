@@ -63,7 +63,7 @@ function ScoreSlider({ katId, name, value, onChange }) {
   );
 }
 
-export default function KindEditor({ kind, onUpdate }) {
+export default function KindEditor({ kind, camp, onUpdate }) {
   const [eigenschaften, setEigenschaften] = useState(null);
   const [detailEigenschaft, setDetailEigenschaft] = useState(null);
   const [aehnlichHinweis, setAehnlichHinweis] = useState(false);
@@ -71,13 +71,14 @@ export default function KindEditor({ kind, onUpdate }) {
   const [browseKatId, setBrowseKatId] = useState(null);
   const printRef = useRef(null);
 
-  // Eigenschaften laden
+  // Eigenschaften laden (camp-spezifisch)
   useEffect(() => {
-    fetch('/data/eigenschaften.json')
+    const file = camp?.eigenschaftenFile || '/data/eigenschaften-youth-camp.json';
+    fetch(file)
       .then(r => r.json())
       .then(d => setEigenschaften(d.kategorien))
       .catch(console.error);
-  }, []);
+  }, [camp?.eigenschaftenFile]);
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,

@@ -13,13 +13,13 @@ function NeuesKindForm({ onAnlegen, onAbbrechen }) {
   };
 
   return (
-    <form onSubmit={submit} className="mt-2 bg-white rounded-xl p-3 shadow-sm border border-camissio-lila/30">
+    <form onSubmit={submit} className="mt-2 bg-white rounded-xl p-3 shadow-sm border border-camp-akzent/30">
       <input
         type="text"
         placeholder="Vor- und Nachname (z. B. Lukas Müller)"
         value={name}
         onChange={e => setName(e.target.value)}
-        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-camissio-lila text-camissio-dunkelblau"
+        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-camp-akzent text-camissio-dunkelblau"
         aria-label="Name des Kindes"
         autoFocus
       />
@@ -33,8 +33,8 @@ function NeuesKindForm({ onAnlegen, onAbbrechen }) {
               onClick={() => setGeschlecht(val)}
               className={`flex-1 text-xs py-1 rounded-lg border transition-colors ${
                 geschlecht === val
-                  ? 'bg-camissio-lila text-white border-camissio-lila'
-                  : 'border-gray-200 text-gray-500 hover:border-camissio-lila'
+                  ? 'bg-camp-akzent text-white border-camp-akzent'
+                  : 'border-gray-200 text-gray-500 hover:border-camp-akzent'
               }`}
             >
               {label}
@@ -46,7 +46,7 @@ function NeuesKindForm({ onAnlegen, onAbbrechen }) {
         <button
           type="submit"
           disabled={!name.trim()}
-          className="flex-1 bg-camissio-lila text-white rounded-lg py-2 text-sm font-semibold hover:bg-opacity-90 disabled:opacity-40 transition-colors"
+          className="flex-1 bg-camp-akzent text-white rounded-lg py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-40 transition-colors"
         >
           Anlegen
         </button>
@@ -91,7 +91,7 @@ export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeu
               key={kind.id}
               className={`group flex items-center justify-between rounded-xl px-3 py-2.5 cursor-pointer transition-all ${
                 istAktiv
-                  ? 'bg-camissio-lila/15 border border-camissio-lila/40'
+                  ? 'bg-camp-akzent-hell border border-camp-akzent/40'
                   : 'hover:bg-gray-50 border border-transparent'
               }`}
               onClick={() => onKindAktivieren(kind.id)}
@@ -145,7 +145,7 @@ export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeu
         {!formOffen && (
           <button
             onClick={() => setFormOffen(true)}
-            className="w-full flex items-center justify-center gap-2 bg-camissio-lila text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-opacity-90 transition-colors"
+            className="w-full flex items-center justify-center gap-2 bg-camp-akzent text-white rounded-xl py-2.5 text-sm font-semibold hover:opacity-90 transition-colors"
           >
             <span>+</span>
             <span>Neues Kind</span>

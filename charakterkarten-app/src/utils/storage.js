@@ -1,8 +1,8 @@
-const STORAGE_KEY = 'camissio_charakterkarten';
+import { CAMP_STORAGE_KEY } from '../config/camps';
 
-export function loadFromStorage() {
+export function loadFromStorage(storageKey) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey);
     if (!raw) return null;
     return JSON.parse(raw);
   } catch {
@@ -10,9 +10,33 @@ export function loadFromStorage() {
   }
 }
 
-export function saveToStorage(data) {
+export function saveToStorage(data, storageKey) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(storageKey, JSON.stringify(data));
+  } catch {
+    console.warn('LocalStorage nicht verfügbar');
+  }
+}
+
+export function loadAktivesCamp() {
+  try {
+    return localStorage.getItem(CAMP_STORAGE_KEY) || null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveAktivesCamp(campId) {
+  try {
+    localStorage.setItem(CAMP_STORAGE_KEY, campId);
+  } catch {
+    console.warn('LocalStorage nicht verfügbar');
+  }
+}
+
+export function clearAktivesCamp() {
+  try {
+    localStorage.removeItem(CAMP_STORAGE_KEY);
   } catch {
     console.warn('LocalStorage nicht verfügbar');
   }
@@ -39,8 +63,8 @@ export function createKind(name, geschlecht = 'keine') {
   };
 }
 
-export function getInitialState() {
-  const loaded = loadFromStorage();
+export function getInitialState(storageKey) {
+  const loaded = loadFromStorage(storageKey);
   if (loaded && loaded.kinder && loaded.kinder.length > 0) {
     return loaded;
   }

@@ -1,0 +1,446 @@
+{
+  "kategorien": [
+    {
+      "id": "beziehungsstark",
+      "name": "Der Beziehungsstarke",
+      "farbe": "#55c1c4",
+      "eigenschaften": [
+        {
+          "name": "Freundlich",
+          "beschreibung": "Mit einer freundlichen oder liebenswerten Art, nett, sympathisch, angenehm. Ein treuer und vertrauenswürdiger Freund für seine Mitmenschen, freundlich zu anderen, natürliche Fürsorge für andere.",
+          "bibelvers": "Micha 6,8",
+          "inspirationstext": "[Name] ist ein wirklich freundlicher Mensch, in dessen Nähe man sich sofort wohlfühlt. [Name] strahlt eine natürliche Wärme aus, die andere anzieht und einlädt. Die Fürsorge, die [Name] für andere zeigt, ist keine Pflicht, sondern kommt tief aus dem Herzen. [Name] spiegelt damit etwas von der Liebe wider, die Gott für jeden Menschen hat."
+        },
+        {
+          "name": "Zuvorkommend",
+          "beschreibung": "Kommt anderen entgegen, bevor sie fragen müssen. Nimmt die Bedürfnisse anderer wahr und handelt proaktiv, um ihnen zu helfen oder ihnen das Leben angenehmer zu machen.",
+          "bibelvers": "Römer 12,10",
+          "inspirationstext": "[Name] hat ein besonderes Gespür dafür, was andere brauchen – oft noch bevor sie selbst darum bitten müssen. Mit einer aufmerksamen Haltung geht [Name] auf Menschen zu und macht ihnen das Leben leichter. Diese Zuvorkommenheit ist ein Geschenk, das [Name] großzügig mit anderen teilt. Gott hat [Name] mit einem Herz ausgestattet, das anderen zuerst denkt."
+        },
+        {
+          "name": "Höflich",
+          "beschreibung": "Zeigt gute Manieren und Respekt im Umgang mit anderen. Begegnet allen Menschen mit Würde und Wertschätzung.",
+          "bibelvers": "1. Petrus 3,8",
+          "inspirationstext": "[Name] begegnet jedem Menschen mit echter Wertschätzung und Respekt. Im Umgang mit anderen zeigt [Name] eine Haltung, die von Freundlichkeit und Würde geprägt ist. Diese Höflichkeit ist keine leere Floskel, sondern Ausdruck eines tiefen Respekts vor jedem Menschen als Gottes Geschöpf. Mit dieser Art macht [Name] die Welt um sich herum ein Stück schöner."
+        },
+        {
+          "name": "Sanftmütig",
+          "beschreibung": "Freundliches, mildes Temperament, ausgeglichen, mitfühlend, liebenswürdig. Friedensstifter, baut andere auf, spricht leise, aber mutig die Wahrheit, nutzt die Heilige Schrift als Leitfaden in schwierigen Situationen.",
+          "bibelvers": "1. Petrus 3,4; Kolosser 3,12",
+          "inspirationstext": "[Name] besitzt eine bemerkenswerte Sanftmut, die anderen Menschen Frieden und Sicherheit schenkt. Wo andere laut werden, findet [Name] ruhige und weise Worte. Diese ausgeglichene und mitfühlende Art macht [Name] zu einem echten Friedensstifter in der Gruppe. Gott gebraucht [Name]s sanfte Art, um anderen Menschen Halt und Ermutigung zu geben."
+        },
+        {
+          "name": "Angenehm",
+          "beschreibung": "In ihrer/seiner Nähe fühlt man sich wohl, wohlgefällig, erfreulich. Hat eine positive Einstellung, möchte das Reich Gottes voranbringen, ist freundlich zu anderen, lobt und preist den Herrn.",
+          "bibelvers": "2. Korinther 5,9; Psalm 104,34",
+          "inspirationstext": "[Name] hat eine Ausstrahlung, die andere sofort spüren – in [Name]s Nähe fühlt man sich wohl und willkommen. Diese positive und einladende Persönlichkeit ist eine echte Stärke. [Name] trägt durch diese angenehme Art dazu bei, dass Gemeinschaft schöner wird und Menschen sich angenommen fühlen. Das ist ein wunderbares Geschenk Gottes."
+        },
+        {
+          "name": "Aufmerksam",
+          "beschreibung": "Aufmerksam sein, handeln und beobachten. Rücksichtsvoll und aufmerksam gegenüber den Gefühlen der Mitmenschen, befolgt Anweisungen, um eine Aufgabe hervorragend zu erfüllen, bezieht andere mit ein.",
+          "bibelvers": "Sprüche 22,17-19; Philipper 2,3-4",
+          "inspirationstext": "[Name] besitzt eine seltene Fähigkeit: [Name] nimmt wirklich wahr, was um ihn/sie herum passiert. Durch diese Aufmerksamkeit entgehen [Name] kaum die Bedürfnisse anderer oder Details, die anderen entgehen. [Name] bezieht andere aktiv ein und sorgt dafür, dass sich niemand übersehen fühlt. Diese Achtsamkeit ist ein Zeichen echter Herzensliebe."
+        },
+        {
+          "name": "Achtsam",
+          "beschreibung": "Aufmerksames Zuhören, um zu verstehen. Ist leicht zugänglich, ein Trost für andere, respektvoll gegenüber anderen während Andachten.",
+          "bibelvers": "Sprüche 4,1; Jakobus 1,19-20",
+          "inspirationstext": "[Name] ist jemand, dem man gerne von sich erzählt – weil [Name] wirklich zuhört, um zu verstehen. Diese Achtsamkeit schafft eine Atmosphäre des Vertrauens, in der andere sich öffnen können. [Name] ist ein Trost für die, die ihn/sie kennen. Gott gebraucht [Name]s achtsames Herz, um anderen Geborgenheit zu schenken."
+        },
+        {
+          "name": "Respektvoll",
+          "beschreibung": "Achtung, hohe Wertschätzung und Höflichkeit anderen entgegenbringen. Ehrt Autoritäten und Mitmenschen, respektiert die Zeit und Meinungen anderer, verehrt den Herrn.",
+          "bibelvers": "1. Petrus 2,17; 1. Petrus 2,13",
+          "inspirationstext": "[Name] bringt anderen Menschen echte Wertschätzung entgegen – unabhängig davon, wer sie sind. Dieser Respekt zeigt sich im Umgang mit Autoritäten genauso wie mit Gleichaltrigen. [Name] nimmt die Meinungen und die Zeit anderer ernst. Diese respektvolle Haltung ist ein Ausdruck des Glaubens, dass jeder Mensch von Gott geliebt und wertvoll ist."
+        },
+        {
+          "name": "Rücksichtsvoll",
+          "beschreibung": "Rücksichtnahme auf die Umstände oder Gefühle anderer. Einfühlsam gegenüber seinen Mitmenschen, respektiert die Gefühle anderer, hört aufmerksam zu, um ein besseres Verständnis zu erlangen.",
+          "bibelvers": "Epheser 4,32",
+          "inspirationstext": "[Name] handelt mit bemerkenswerter Rücksicht auf die Menschen um sich herum. [Name] nimmt sich Zeit, die Situation anderer zu verstehen, bevor er/sie handelt oder spricht. Diese Einfühlsamkeit macht [Name] zu jemandem, dem andere vertrauen können. Gott formt in [Name] ein Herz, das anderen wirklich wichtig nimmt."
+        },
+        {
+          "name": "Geduldig",
+          "beschreibung": "Mit Gelassenheit warten, Verständnis für andere haben, ruhig und fleißig sein. Ausdauer zeigen, wenn man mit Widrigkeiten konfrontiert ist, andere lieben, andere ruhig ermutigen.",
+          "bibelvers": "Sprüche 14,29; Sprüche 17,27",
+          "inspirationstext": "[Name] besitzt eine Geduld, die anderen Kraft gibt. Wo andere schnell ungeduldig werden, bleibt [Name] ruhig und gelassen. Diese Geduld zeigt sich nicht nur in schwierigen Momenten, sondern auch im täglichen Miteinander mit anderen. [Name] ermutigt durch diese ruhige Art und gibt anderen das Gefühl, dass sie Zeit haben dürfen."
+        },
+        {
+          "name": "Einfühlsam",
+          "beschreibung": "Hat oder zeigt ein schnelles und feinfühliges Verständnis für die Gefühle anderer. Zeigt Mitgefühl für andere, ist warmherzig, nimmt die Gefühle anderer wahr, ist aufmerksam gegenüber denen, die in Not sind.",
+          "bibelvers": "Kolosser 3,12; 1. Petrus 3,8",
+          "inspirationstext": "[Name] hat die seltene Gabe, die Gefühle anderer tief zu verstehen. [Name] nimmt wahr, wenn jemand Unterstützung braucht, und geht dann einfühlsam auf ihn/sie zu. Diese Warmherzigkeit ist kein Zufall, sondern Ausdruck eines von Gott berührten Herzens. [Name] spiegelt durch seine/ihre Einfühlsamkeit die Liebe Gottes für jeden einzelnen Menschen wider."
+        },
+        {
+          "name": "Mitfühlend",
+          "beschreibung": "Verständnisvoll, bereit, anderen zu helfen, gutherzig. Zeigt seinen Mitmenschen Freundlichkeit, indem er sie willkommen heißt, ihnen mit ganzem Herzen dient, sie ermutigt, in ihrem Glauben zu wachsen.",
+          "bibelvers": "Kolosser 3,12; Psalm 103,13",
+          "inspirationstext": "[Name] zeigt ein tiefes Mitgefühl für die Menschen in seiner/ihrer Umgebung. [Name] heißt andere willkommen und dient ihnen von ganzem Herzen. Dieses Mitgefühl ist keine Schwäche, sondern eine kraftvolle Stärke, die andere aufbaut. Gott gebraucht [Name]s gutgütiges Herz, um anderen seine Liebe spürbar zu machen."
+        },
+        {
+          "name": "Ermutigend",
+          "beschreibung": "Gibt anderen Mut und Zuversicht. Hebt andere auf, spricht ihnen Kraft zu und motiviert sie, ihr Bestes zu geben. Sieht das Potential in anderen und spricht es aus.",
+          "bibelvers": "1. Thessalonicher 5,11; Hebräer 10,24-25",
+          "inspirationstext": "[Name] hat eine besondere Gabe: [Name] sieht das Potenzial in anderen und spricht es aus. Wer mit [Name] zusammen ist, fühlt sich gestärkt und ermutigt, das Beste aus sich herauszuholen. Diese ermunternde Art ist ein echter Segen für die Gruppe. Gott gebraucht [Name], um anderen Kraft und Zuversicht zu schenken."
+        },
+        {
+          "name": "Vergebend",
+          "beschreibung": "Neigt dazu, Vergehen zu übersehen und keinen Groll mehr zu hegen. Löst Konflikte auf christliche Weise, zeigt anderen Barmherzigkeit und Gnade, strebt nach Einheit unter Gleichaltrigen.",
+          "bibelvers": "Epheser 4,32",
+          "inspirationstext": "[Name] zeigt eine bemerkenswerte Fähigkeit zur Vergebung. Anstatt Groll zu hegen, wählt [Name] den Weg der Gnade und Barmherzigkeit. Diese versöhnliche Art stiftet Frieden und stärkt die Gemeinschaft. [Name] lebt damit etwas vor, was Gott uns selbst geschenkt hat: bedingungslose Vergebung."
+        },
+        {
+          "name": "Gütig",
+          "beschreibung": "Herzlich, hilfsbereit, freundlich. Ermutigt andere, bezieht seine Mitmenschen mit ein, sucht nach Möglichkeiten, anderen zu dienen, begleitet Freunde auf ihrer Suche nach der Wahrheit.",
+          "bibelvers": "Epheser 4,32; Micha 6,8",
+          "inspirationstext": "[Name] ist von Herzen gütig – das spürt jeder, der [Name] kennt. Diese Güte zeigt sich in kleinen Gesten genauso wie in großen Momenten. [Name] sucht aktiv nach Möglichkeiten, anderen zu dienen und sie auf ihrem Weg zu begleiten. Dieses gütige Herz ist ein wundervoller Ausdruck des Charakters Gottes."
+        },
+        {
+          "name": "Teamplayer",
+          "beschreibung": "Gemeinsam oder als Gruppe für ein gemeinsames Ziel arbeiten oder handeln. Ein Teamplayer, der sich bemüht, andere aufzubauen, indem er offen ist und die Bedürfnisse seiner Mitmenschen über die eigenen stellt.",
+          "bibelvers": "Römer 12,4-5",
+          "inspirationstext": "[Name] ist ein echter Teamplayer – jemand, der das Gelingen der Gruppe über den eigenen Erfolg stellt. [Name] baut andere auf und sorgt dafür, dass alle mitgenommen werden. Diese Haltung macht Teams stärker und das Miteinander schöner. Gott hat [Name] geschaffen, um in Gemeinschaft zu wachsen und andere dabei mitzunehmen."
+        }
+      ]
+    },
+    {
+      "id": "anpacker",
+      "name": "Der Anpacker",
+      "farbe": "#fa5c33",
+      "eigenschaften": [
+        {
+          "name": "Macher",
+          "beschreibung": "Jemand, der sich ohne Anweisungen, Aufforderungen oder Anleitungen von anderen engagiert. Selbstmotiviert, arbeitet hart, sucht nach Gelegenheiten, das Evangelium weiterzugeben, führt Aufgaben mit Exzellenz aus.",
+          "bibelvers": "Epheser 2,10",
+          "inspirationstext": "[Name] wartet nicht darauf, dass jemand anderes anfängt – [Name] packt einfach an. Diese Initiative und Selbstmotivation sind beeindruckend und ein Segen für alle um ihn/sie herum. [Name] führt Aufgaben mit echter Sorgfalt und Exzellenz aus. Gott hat [Name] als jemanden geschaffen, der die Hände ausstreckt und handelt."
+        },
+        {
+          "name": "Dienend",
+          "beschreibung": "Sich selbst hingeben, um gebraucht zu werden oder hilfreich zu sein. Ein Herz für den Dienst, stellt die Bedürfnisse seiner Mitmenschen über die eigenen, teilt die Wahrheit mit seinen Mitmenschen.",
+          "bibelvers": "2. Korinther 9,7",
+          "inspirationstext": "[Name] hat ein echtes Dienerherz – und das zeigt sich im Alltag. [Name] stellt die Bedürfnisse anderer über die eigenen, ohne dabei groß Aufhebens zu machen. Dieser selbstlose Einsatz ist eine kraftvolle Stärke. Mit dieser dienenden Haltung folgt [Name] dem Beispiel Jesu, der selbst als Diener unter uns lebte."
+        },
+        {
+          "name": "Hilfsbereit",
+          "beschreibung": "Neigt dazu, zuzustimmen, zu helfen oder zu unterstützen. Bezieht andere mit ein und heißt sie willkommen, bemüht sich, seine Mitmenschen näher zum Herrn zu bringen, führt gezielte Gespräche.",
+          "bibelvers": "Johannes 15,13",
+          "inspirationstext": "[Name] ist immer zur Stelle, wenn jemand Hilfe braucht. Diese Hilfsbereitschaft ist keine Last für [Name], sondern Ausdruck echter Herzensliebe. [Name] schließt andere ein und sorgt dafür, dass niemand alleine da steht. Gott gebraucht [Name]s helfende Hände, um anderen seine Fürsorge zu zeigen."
+        },
+        {
+          "name": "Großzügig",
+          "beschreibung": "Freigiebig und selbstlos im Geben von Zeit, Dingen/Mitteln und Talenten. Hat ein christusähnliches Herz für andere, den Wunsch zu dienen, teilt freigiebig mit anderen.",
+          "bibelvers": "Sprüche 22,9",
+          "inspirationstext": "[Name] gibt großzügig von dem, was er/sie hat – ob Zeit, Aufmerksamkeit oder Talente. Diese Freigiebigkeit kommt aus einem Herzen, das von Gottes Güte überfließt. [Name] teilt gerne und macht andere dadurch reicher. Diese Großzügigkeit ist ein Zeichen eines Herzens, das Jesus ähnlich wird."
+        },
+        {
+          "name": "Spontan",
+          "beschreibung": "Anpassungsfähig und flexibel. Passt sich mit der Kraft, die er im Herrn findet, gut an Widrigkeiten an, probiert mit furchtlosem Geist Neues aus, freut sich auf neue Herausforderungen.",
+          "bibelvers": "Matthäus 5,14-16",
+          "inspirationstext": "[Name] begegnet dem Leben mit einer frischen und spontanen Offenheit. Neue Situationen schrecken [Name] nicht ab – im Gegenteil, [Name] geht ihnen mit Energie und Freude entgegen. Diese Flexibilität und Abenteuerlust sind eine echte Stärke. [Name] lässt sich von Gott in neue Abenteuer führen und nimmt dabei andere mit."
+        },
+        {
+          "name": "Aufgeschlossen",
+          "beschreibung": "Hat eine positive Einstellung gegenüber neuen Ideen, ist vorurteilsfrei. Diskutiert gerne über theologische Themen, hat ein tiefes Verlangen, die Heilige Schrift zu studieren, heißt andere willkommen.",
+          "bibelvers": "Sprüche 22,17",
+          "inspirationstext": "[Name] begegnet neuen Ideen und Menschen mit einer echten Offenheit. Diese vorurteilsfreie Haltung macht es anderen leicht, auf [Name] zuzugehen und sich wohlfühlen. [Name] ist bereit zu lernen und wächst dadurch ständig. Gott freut sich an diesem aufgeschlossenen und lernbereiten Herzen."
+        }
+      ]
+    },
+    {
+      "id": "unaufhaltsam",
+      "name": "Der Unaufhaltsame",
+      "farbe": "#f35b56",
+      "eigenschaften": [
+        {
+          "name": "On fire",
+          "beschreibung": "Ernsthaft in Absicht, Zielsetzung oder Bemühungen, Aufrichtigkeit, intensives Studium des Wortes Gottes, brennendes Verlangen, den Herrn besser kennenzulernen.",
+          "bibelvers": "Hebräer 6,11-12",
+          "inspirationstext": "[Name] brennt für das, was wirklich zählt. Dieses Feuer für Gott und für die Menschen ist unverkennbar und ansteckend. [Name] geht mit ganzem Herzen in das, was er/sie tut. Dieses Brennen für Gott ist ein Geschenk – und [Name] schützt und hütet diese Flamme sorgfältig."
+        },
+        {
+          "name": "Begeisternd",
+          "beschreibung": "Ein lebhaftes und aktives Interesse, leidenschaftlicher Eifer beim Streben nach ... Energisch beim Weitergeben des Evangeliums, leidenschaftlich, zielstrebig, lebensfroh.",
+          "bibelvers": "Römer 12,11; Kolosser 3,23",
+          "inspirationstext": "[Name] ist jemand, der andere mit seiner/ihrer Begeisterung mitreißt. Diese Leidenschaft ist ansteckend – wer mit [Name] zusammen ist, bekommt selbst mehr Energie und Freude. [Name] geht die Dinge mit vollem Einsatz an. Gott gebraucht [Name]s mitreißende Art, um andere für Gutes zu begeistern."
+        },
+        {
+          "name": "Motiviert",
+          "beschreibung": "Ein Ziel haben und die Absicht, es zu erreichen. Setzt sich Ziele, ist motiviert, versteht seine oder ihre Rolle, um ..., verbreitet fleißig das Evangelium.",
+          "bibelvers": "Jeremia 29,11",
+          "inspirationstext": "[Name] weiß, wo er/sie hinwill, und geht diesen Weg mit echter Entschlossenheit. Diese innere Motivation ist beeindruckend und inspiriert andere. [Name] lässt sich nicht leicht abbringen und behält das Ziel im Blick. Gott hat [Name] mit einem klaren Sinn für Auftrag und Richtung ausgestattet."
+        },
+        {
+          "name": "Commited",
+          "beschreibung": "Sich ganz einem Ziel verschrieben, zielorientiert, hingebungsvoll und treu. Ist entschlossen, hart zu arbeiten, weil er weiß, dass er dem einen wahren König dient, ist vertrauenswürdig und loyal.",
+          "bibelvers": "Kolosser 3,23-24; Philipper 3,14",
+          "inspirationstext": "[Name] ist jemandem, auf den man sich verlassen kann. Wenn [Name] etwas auf sich nimmt, dann meint er/sie es ernst – bis zum Ende. Diese Hingabe und Treue sind selten und wertvoll. [Name] weiß, wem er/sie letztendlich dient, und dieser Glaube trägt ihn/sie durch jede Herausforderung."
+        },
+        {
+          "name": "Entschlossen",
+          "beschreibung": "Endgültige und abschließende Entscheidungsfindung auf der Grundlage des Willens Gottes. Spricht mit Gewissheit über die Wahrheit, ist eine Führungspersönlichkeit, entschlossen, das zu tun, was richtig ist.",
+          "bibelvers": "Galater 6,9",
+          "inspirationstext": "[Name] trifft Entscheidungen mit Klarheit und Überzeugung. Dieser Entschluss, das Richtige zu tun, auch wenn es nicht immer einfach ist, ist beeindruckend. [Name] lässt sich nicht vom Weg abbringen, wenn er/sie einmal erkannt hat, was richtig ist. Gott gebraucht [Name]s Entschlossenheit, um Dinge zu bewegen."
+        },
+        {
+          "name": "Zielstrebig",
+          "beschreibung": "Zeigt feste Absichten, entschlossen, lässt sich nicht abbringen. Ein fleißiger Arbeiter, der Widrigkeiten mit der Kraft des Herrn begegnet und danach strebt, im Glauben zu wachsen.",
+          "bibelvers": "Hebräer 12,1; 1. Korinther 9,24",
+          "inspirationstext": "[Name] hat klare Ziele und verfolgt sie mit Ausdauer. Diese Zielstrebigkeit macht [Name] zu jemandem, der wirklich etwas erreicht. Widrigkeiten bringen [Name] nicht aus der Bahn, sondern spornen ihn/sie an. Gott freut sich an [Name]s Ausdauer und stärkt ihn/sie immer wieder neu."
+        },
+        {
+          "name": "Fleißig",
+          "beschreibung": "Stetiges Bemühen, erfüllt das, was man sich vorgenommen hat, um dem Herrn zu dienen. Bemüht sich, auch die kleinsten Aufgaben zu erfüllen, arbeitet von ganzem Herzen für den Herrn.",
+          "bibelvers": "Hebräer 6,11-12; Kolosser 3,23",
+          "inspirationstext": "[Name] bringt echten Fleiß in alles, was er/sie anpackt. Auch kleine Aufgaben erledigt [Name] mit Sorgfalt und ganzem Herzen. Diese Gewissenhaftigkeit ist eine Stärke, die sich auszahlt. [Name] tut seine Arbeit, als täte er sie für Gott selbst – und das merkt man."
+        },
+        {
+          "name": "Diszipliniert",
+          "beschreibung": "Ein Zustand der Ordnung, der durch Training und strenge Selbstbeherrschung aufrechterhalten wird, hat Kontrolle über seine Handlungen und Gefühle. Merkt sich Bibelverse, widmet sich intensiv dem Wort.",
+          "bibelvers": "1. Timotheus 4,7-8; 2. Timotheus 1,7",
+          "inspirationstext": "[Name] zeigt eine beeindruckende Selbstdisziplin in seinem/ihrem Alltag. Diese innere Ordnung ermöglicht es [Name], verlässlich und konsequent zu sein. [Name] übt sich täglich in dem, was ihm/ihr wichtig ist, und wächst dadurch stetig. Gott formt durch diese Disziplin einen starken und ausgereiften Charakter."
+        },
+        {
+          "name": "Ausdauernd",
+          "beschreibung": "Die Eigenschaft oder Gewohnheit, in dem, was man unternimmt, beharrlich zu sein, zielstrebig. Begegnet Herausforderungen mit der Kraft, die man im Herrn findet, bringt begonnenes zu Ende.",
+          "bibelvers": "Römer 5,3-4; Galater 6,9",
+          "inspirationstext": "[Name] gibt nicht auf, auch wenn es schwer wird. Diese Ausdauer ist ein Zeichen von innerem Reichtum und tiefer Verwurzelung. [Name] findet die Kraft zum Durchhalten nicht in sich selbst, sondern in Gott – und das macht [Name] unaufhaltsam. Begonnenes bringt [Name] zu Ende, und das verdient echten Respekt."
+        }
+      ]
+    },
+    {
+      "id": "verwurzelt",
+      "name": "Der Verwurzelte",
+      "farbe": "#00ab67",
+      "eigenschaften": [
+        {
+          "name": "Standhaft",
+          "beschreibung": "Geistige Stärke, Belastbarkeit, Ausdauer, Entschlossenheit, Mut. Stellt Fragen, um seinen Schöpfer kennenzulernen, ist entschlossen, eine Aufgabe nach besten Kräften zu erfüllen, spricht die Wahrheit.",
+          "bibelvers": "Epheser 6,10; 1. Korinther 15,58",
+          "inspirationstext": "[Name] steht fest – auch wenn Druck von außen kommt. Diese innere Standhaftigkeit wurzelt nicht in Sturheit, sondern in einem tiefen Vertrauen in Gott. [Name] lässt sich nicht so leicht erschüttern, weil er/sie weiß, wer das Fundament seines/ihres Lebens ist. Das ist eine Stärke, die andere trägt."
+        },
+        {
+          "name": "Glaubensfest",
+          "beschreibung": "Fest, beständig oder entschlossen, oder unerschütterlich. Verlässlich, zuverlässig, vertrauenswürdig, im Glauben verwurzelt, strebt in den täglichen Aufgaben nach dem Herrn.",
+          "bibelvers": "1. Korinther 15,58; Sprüche 12,27",
+          "inspirationstext": "[Name] ist im Glauben verwurzelt – und das ist in allem spürbar, was er/sie tut. Diese Glaubensfestigkeit gibt [Name] einen stabilen Boden, von dem aus er/sie handelt. [Name] sucht den Herrn im Alltag und findet in ihm die nötige Stärke. Dieses feste Fundament ist ein echtes Geschenk."
+        },
+        {
+          "name": "Glaubensstark",
+          "beschreibung": "Vertrauen in Gottes Führung und Stärke. Passt sich mit der Kraft, die er im Herrn findet, gut an Widrigkeiten an, probiert mit furchtlosem Geist Neues aus.",
+          "bibelvers": "Philipper 4,13; Psalm 46,2",
+          "inspirationstext": "[Name] besitzt einen starken Glauben, der ihn/sie auch durch schwierige Zeiten trägt. Diese Glaubensstärke ermöglicht es [Name], mit Zuversicht in neue Situationen zu gehen. [Name] weiß: Mit Gott ist nichts unmöglich – und dieses Wissen verändert alles. Diese Glaubensstärke ist ein Geschenk an die Menschen um [Name] herum."
+        },
+        {
+          "name": "Gottergeben",
+          "beschreibung": "Frei von Angst, Vertrauen in die Sicherheit. Ist sich sicher, wer Gott ist, kann anderen und Gott vertrauen, wirft seine Sorgen auf den Herrn.",
+          "bibelvers": "Sprüche 10,9; Psalm 16,8-9",
+          "inspirationstext": "[Name] lebt mit einer tiefen Ergebenheit gegenüber Gott. Diese Haltung des Vertrauens schafft in [Name] eine Ruhe und Sicherheit, die andere beeindruckt. [Name] legt seine/ihre Sorgen in Gottes Hände und findet dort echten Frieden. Diese Gottesvertrauen ist ein felsenfestes Fundament."
+        }
+      ]
+    },
+    {
+      "id": "gewissenhaft",
+      "name": "Der Gewissenhafte",
+      "farbe": "#007d99",
+      "eigenschaften": [
+        {
+          "name": "Zuverlässig",
+          "beschreibung": "Verlässlich, vertrauenswürdig, man kann sich auf ihn verlassen. Strebt danach, Aufgaben mit Exzellenz zu erfüllen, ihm/ihr wird anvertraut, die Wahrheit mit seinen/ihren Mitmenschen zu teilen.",
+          "bibelvers": "Psalm 62,6-7; Lukas 16,10",
+          "inspirationstext": "[Name] ist jemand, auf den man sich verlassen kann – immer. Diese Zuverlässigkeit ist eine seltene und wertvolle Eigenschaft. [Name] erledigt, was er/sie zusagt, mit echter Sorgfalt und Treue. Gott gebraucht solche zuverlässigen Menschen, um sein Reich zu bauen."
+        },
+        {
+          "name": "Verantwortungsvoll",
+          "beschreibung": "Übernimmt Verantwortung für die eigene Leistung, moralischer Entscheidungsträger, zuverlässig, verlässlich. Erfüllt die ihm oder ihr übertragenen Aufgaben, verbreitet das Evangelium.",
+          "bibelvers": "1. Petrus 4,10; Philipper 4,13",
+          "inspirationstext": "[Name] übernimmt Verantwortung – und das mit echter Reife. Wenn [Name] eine Aufgabe auf sich nimmt, dann bringt er/sie sie auch zu Ende. Diese Verlässlichkeit macht [Name] zu jemandem, dem andere gerne vertrauen. Gott freut sich über [Name]s verantwortungsvolles Herz und traut ihm/ihr immer mehr an."
+        },
+        {
+          "name": "Vertrauenswürdig",
+          "beschreibung": "Verantwortungsvoll, zuverlässig. Hält Versprechen ein, man kann sich darauf verlassen, dass er Anweisungen befolgt.",
+          "bibelvers": "Sprüche 12,22; 1. Timotheus 1,12",
+          "inspirationstext": "[Name] hält sein/ihr Wort – das wissen alle, die ihn/sie kennen. Diese Vertrauenswürdigkeit ist ein echtes Zeichen von Reife und Integrität. [Name] macht keine leeren Versprechen, sondern steht zu dem, was er/sie sagt. Diese Eigenschaft macht [Name] zu einem wertvollen Freund und Wegbegleiter."
+        },
+        {
+          "name": "Loyal",
+          "beschreibung": "Treu gegenüber seinen Verpflichtungen, Zusagen und gegenüber Autoritäten. Respektiert andere, ist ein treuer Freund, konsequent und engagiert in der Verbreitung des Evangeliums.",
+          "bibelvers": "Römer 12,9-10; Matthäus 25,21",
+          "inspirationstext": "[Name] steht zu seinen/ihren Freunden und Verpflichtungen – auch wenn es schwer wird. Diese Loyalität ist ein Ausdruck echter Liebe und Treue. [Name] ist ein zuverlässiger und treuer Wegbegleiter. Gott schätzt diese Treue – und diese Tugend spiegelt Gottes eigene Treue zu uns wider."
+        }
+      ]
+    },
+    {
+      "id": "vorbild",
+      "name": "Das Vorbild",
+      "farbe": "#a1a5dd",
+      "eigenschaften": [
+        {
+          "name": "Vorbild",
+          "beschreibung": "Lebt vor, was er predigt. Handelt nach seinen Überzeugungen, auch wenn niemand zuschaut. Inspiriert andere durch seinen Lebensstil und seine Entscheidungen.",
+          "bibelvers": "1. Timotheus 4,12; Titus 2,7",
+          "inspirationstext": "[Name] ist jemand, dem andere gerne folgen – nicht weil er/sie es verlangt, sondern weil sein/ihr Leben überzeugt. [Name] lebt vor, was er/sie glaubt, und das mit einer Authentizität, die andere beeindruckt. Diese Vorbildfunktion ist ein Geschenk für alle, die [Name] kennen. Gott hat [Name] geschaffen, um anderen den Weg zu zeigen."
+        },
+        {
+          "name": "Selbstbewusst",
+          "beschreibung": "Selbstsicher, zuversichtlich. Nimmt sich selbst an/akzeptiert, wie Gott ihn oder sie geschaffen hat, hat einen festen, in der Wahrheit verwurzelten Glauben.",
+          "bibelvers": "Hebräer 4,16; Psalm 71,5; Sprüche 14,26",
+          "inspirationstext": "[Name] weiß, wer er/sie ist – und lebt aus diesem Wissen heraus. Dieses Selbstbewusstsein kommt nicht aus Arroganz, sondern aus dem tiefen Wissen, von Gott geliebt und angenommen zu sein. [Name] muss sich nicht beweisen, weil er/sie bereits im Blick Gottes gründet. Diese innere Sicherheit ist eine echte Stärke."
+        },
+        {
+          "name": "Inspirierend",
+          "beschreibung": "Einwandfreie moralische Prinzipien, aufrichtig, ehrlich. Ein christliches Vorbild für andere, authentisch in Wort und Tat, Christus verpflichtet.",
+          "bibelvers": "1. Chronik 29,17; Psalm 25,21",
+          "inspirationstext": "[Name] ist jemand, der andere inspiriert – nicht durch große Worte, sondern durch sein/ihr echtes Leben. Die Art, wie [Name] denkt, spricht und handelt, hat etwas Ansteckendes. Andere wollen das haben, was [Name] hat. Gott gebraucht [Name]s authentisches Leben, um anderen ein Bild von Jesus zu zeigen."
+        },
+        {
+          "name": "Leiter",
+          "beschreibung": "Fähigkeit, andere zu leiten, zu führen und für sie zu sorgen. Führt andere demütig, sucht Weisheit und Rat, motiviert andere, unterwirft sein Leben dem Dienst.",
+          "bibelvers": "Matthäus 20,26-27; Römer 12,1-2; Exodus 18,21",
+          "inspirationstext": "[Name] führt andere – und macht es auf die beste Art: mit Demut und echter Fürsorge. [Name] sucht nicht den Mittelpunkt, sondern stellt sich in den Dienst der Gruppe. Diese Führungspersönlichkeit zieht andere nicht hinter, sondern mit sich. Gott hat [Name] als eine leitende Kraft geschaffen, die anderen dient."
+        }
+      ]
+    },
+    {
+      "id": "anbeter",
+      "name": "Der Anbeter",
+      "farbe": "#f5e563",
+      "eigenschaften": [
+        {
+          "name": "Demütig",
+          "beschreibung": "Bescheiden, dienstbereit, höflich gegenüber anderen und unterwürfig gegenüber Autoritäten. Respektiert und ehrt die Führung, dient hinter den Kulissen, legt Siege zu Füßen des Kreuzes nieder.",
+          "bibelvers": "1. Petrus 5,6; Philipper 2,3",
+          "inspirationstext": "[Name] braucht kein Rampenlicht – er/sie dient auch dann, wenn niemand zusieht. Diese Demut ist keine Schwäche, sondern tiefe Stärke. [Name] stellt sich und seine Erfolge unter Gott und legt sie zu Füßen des Kreuzes. Diese Haltung ist selten und wertvoll – und macht [Name] zu jemandem, dem Gott gerne mehr anvertraut."
+        },
+        {
+          "name": "Dankbar",
+          "beschreibung": "Dankbarkeit für erwiesene Freundlichkeit oder empfangene Wohltaten, drückt Dankbarkeit, Wertschätzung und Anerkennung aus. Sich bewusst, wie der Herr für einen sorgt, demütig, dankbar für die Gaben.",
+          "bibelvers": "Epheser 5,20; 1. Thessalonicher 5,18",
+          "inspirationstext": "[Name] hat einen Blick für das Gute, das Gott in sein/ihr Leben gebracht hat. Diese Dankbarkeit zeigt sich in der Art, wie [Name] redet und lebt. [Name] nimmt die Fürsorge Gottes wahr und dankt ihm dafür – auch in kleinen Dingen. Diese dankbare Haltung strahlt auf alle aus, die [Name] umgeben."
+        },
+        {
+          "name": "Zuversichtlich",
+          "beschreibung": "Optimistisch, zuversichtlich, hoffnungsvoll. Sieht die Möglichkeiten, die Gott bereitet, und vertraut auf seine gute Führung auch in schwierigen Zeiten.",
+          "bibelvers": "Jeremia 29,11; Psalm 62,6",
+          "inspirationstext": "[Name] trägt eine ansteckende Zuversicht in sich. Auch wenn die Dinge schwierig sind, sieht [Name] Gottes Möglichkeiten und bleibt hoffnungsvoll. Diese Haltung ist ein Geschenk für die Gemeinschaft um [Name] herum. [Name] erinnert andere daran, dass Gott einen guten Plan hat – und das allein ist schon sehr viel wert."
+        },
+        {
+          "name": "Fröhlich",
+          "beschreibung": "Fröhlichkeit, Freude, Zufriedenheit und Glück hervorrufend. Sein oder ihr Lächeln lädt andere dazu ein, an Aktivitäten teilzunehmen, sieht das Positive in schwierigen oder herausfordernden Situationen.",
+          "bibelvers": "Johannes 15,11; Psalm 5,12",
+          "inspirationstext": "[Name] hat eine Fröhlichkeit, die ansteckend ist. Dieses Lächeln und diese Lebensfreude kommen nicht aus perfekten Umständen, sondern aus einer tiefen Freude in Gott. [Name] lädt andere ein, mitzumachen und das Positive zu sehen. Diese Freude ist ein echtes Geschenk – und Gott ist der Ursprung davon."
+        },
+        {
+          "name": "Fair",
+          "beschreibung": "Behandelt alle Menschen gerecht und mit gleicher Würde. Urteilt nicht vorschnell und sucht das Beste für alle Beteiligten.",
+          "bibelvers": "Micha 6,8; Sprüche 21,3",
+          "inspirationstext": "[Name] behandelt Menschen mit echter Fairness und Gerechtigkeit. [Name] macht keine Unterschiede und gibt jedem die gleiche Würde und Wertschätzung. Diese faire Haltung schafft Vertrauen und macht [Name] zu einem verlässlichen Vermittler. Gottes Sinn für Gerechtigkeit spiegelt sich in [Name]s Art wider."
+        },
+        {
+          "name": "Ehrlich",
+          "beschreibung": "Aufrichtig, integer, mit ehrenhaften Absichten, Prinzipien und Handlungen. Authentisch und offen gegenüber anderen, spricht die Wahrheit, hält an der Integrität des Evangeliums fest.",
+          "bibelvers": "Epheser 4,25",
+          "inspirationstext": "[Name] redet geradeheraus – aber immer mit Respekt und Liebe. Diese Ehrlichkeit macht [Name] zu jemandem, dem andere vertrauen. [Name] sagt, was er/sie denkt, und meint, was er/sie sagt. Diese Integrität ist eine Seltenheit und ein echtes Zeichen von Charakter."
+        },
+        {
+          "name": "Aufrichtig",
+          "beschreibung": "Frei von Heuchelei, wahrhaftig, echt. Authentisch in Wort und Tat, kümmert sich wirklich um andere, wie man an seinen Taten sieht, geht mit gutem Beispiel voran.",
+          "bibelvers": "Hebräer 10,22; Sprüche 3,3",
+          "inspirationstext": "[Name] ist echt – was man sieht, ist auch das, was man bekommt. Diese Aufrichtigkeit ist selten und wertvoll. [Name] spielt keine Rolle, sondern lebt authentisch aus seiner/ihrer Beziehung zu Gott. Diese Echtheit schafft Vertrauen und macht tiefe Beziehungen möglich."
+        },
+        {
+          "name": "Authentisch",
+          "beschreibung": "Übereinstimmung mit Tatsachen oder der Realität, von Natur aus ehrlich. Spricht die Wahrheit, hält sein Wort, Handlungen spiegeln die Liebe Christi wider.",
+          "bibelvers": "Römer 12,2",
+          "inspirationstext": "[Name] ist unverwechselbar – so, wie Gott ihn/sie geschaffen hat. Diese Authentizität macht [Name] besonders und unersetzlich. [Name] passt sich nicht jedem Wind an, sondern bleibt sich treu – in einer Welt, die ständig Anpassung fordert, ist das eine echte Stärke. Das spiegelt etwas von Gottes eigenem treuen Charakter wider."
+        }
+      ]
+    },
+    {
+      "id": "lernend",
+      "name": "Der Lernende",
+      "farbe": "#1c4554",
+      "eigenschaften": [
+        {
+          "name": "Intelligent",
+          "beschreibung": "Schnell im Verstehen, lernfähig, kreativ im Denken. Nutzt seine Verstandesgaben, um Gottes Wort zu verstehen und anderen zu erklären.",
+          "bibelvers": "Sprüche 2,6; Jakobus 1,5",
+          "inspirationstext": "[Name] denkt klar und schnell – und nutzt diese Gabe, um anderen zu helfen und die Welt besser zu verstehen. Diese geistige Fähigkeit ist ein Geschenk Gottes, das [Name] verantwortungsvoll einsetzt. [Name] sucht Wissen nicht für sich selbst, sondern um anderen zu dienen. Gott freut sich über [Name]s lernbereiten Geist."
+        },
+        {
+          "name": "Weise",
+          "beschreibung": "Gesundes Urteilsvermögen, gesunder Menschenverstand, umfassendes Wissen, Unterscheidungsvermögen. Holt Rat ein, gibt fundierte Ratschläge, studiert und lernt die Heilige Schrift auswendig.",
+          "bibelvers": "Sprüche 9,10",
+          "inspirationstext": "[Name] handelt mit einer Weisheit, die weit über sein/ihr Alter hinausgeht. [Name] hört erst zu, bevor er/sie spricht – und wenn er/sie dann redet, lohnt es sich zuzuhören. Diese Weisheit kommt aus einer lebendigen Beziehung zu Gott, der selbst die Quelle aller Weisheit ist. [Name] ist ein Segen für alle, die seinen/ihren Rat suchen."
+        },
+        {
+          "name": "Urteilsfähig",
+          "beschreibung": "Unterscheidet zwischen Gut und Böse, ist besonnen, nimmt die Gefühle anderer wahr und ist einfühlsam. Sucht Weisheit bei denen, die weiser sind als er selbst, hört erst zu, bevor er spricht.",
+          "bibelvers": "Psalm 119,66-67; Sprüche 17,27",
+          "inspirationstext": "[Name] hat einen feinen Sinn für das, was stimmt und was nicht. Dieses Urteilsvermögen macht [Name] zu einem wertvollen Gesprächspartner und Ratgeber. [Name] urteilt nicht vorschnell, sondern hört erst zu und denkt nach. Diese Eigenschaft zeigt eine echte innere Reife."
+        },
+        {
+          "name": "Wissbegierig",
+          "beschreibung": "Neugierig, lernhungrig, stellt Fragen. Hat ein tiefes Verlangen, Gott und die Welt besser zu verstehen, und sucht aktiv nach Antworten.",
+          "bibelvers": "Sprüche 4,7; Psalm 119,18",
+          "inspirationstext": "[Name] stellt die richtigen Fragen – und ist nicht zufrieden mit einfachen Antworten. Diese Wissbegierigkeit treibt [Name] dazu, tiefer zu graben und mehr zu verstehen. [Name] sucht nach Wahrheit und findet sie in Gott. Diese Neugier ist ein Geschenk, das [Name] wachsen lässt."
+        }
+      ]
+    },
+    {
+      "id": "gestalter",
+      "name": "Der Gestalter",
+      "farbe": "#de69a8",
+      "eigenschaften": [
+        {
+          "name": "Kreativ",
+          "beschreibung": "Fantasievoll, bringt neue Dinge und Ideen hervor. Nutzt seine Erfindungsgabe und seinen Einfallsreichtum, um seine Mitmenschen zu begeistern, geht Herausforderungen oder Schwierigkeiten mit einer neuen Perspektive an.",
+          "bibelvers": "Epheser 4,16",
+          "inspirationstext": "[Name] denkt um die Ecke – und das ist eine echte Gabe. Ideen, die anderen nicht einfallen, kommen [Name] ganz natürlich. Diese Kreativität bereichert die Gruppe und eröffnet neue Möglichkeiten. Gott hat [Name] mit einer schöpferischen Phantasie ausgestattet, die seinen Fingerabdruck trägt."
+        },
+        {
+          "name": "Einfallsreich",
+          "beschreibung": "In der Lage, neue Dinge oder Ideen zu schaffen, die mit der Realität vereinbar sind. Denkt über den Tellerrand hinaus, nutzt seine oder ihre Talente, um neue Wege zu finden, andere einzubeziehen.",
+          "bibelvers": "Epheser 2,10",
+          "inspirationstext": "[Name] findet immer einen Weg. Diese Einfallsreichtum ist kein Zufall, sondern Ausdruck eines von Gott geschenkten kreativen Geistes. [Name] denkt nicht in Grenzen, sondern in Möglichkeiten. Das ist eine Stärke, die andere begeistert und inspiriert."
+        },
+        {
+          "name": "Künstlerisch begabt",
+          "beschreibung": "Besitzt musikalische, künstlerische oder kreative Talente. Nutzt diese Gaben, um Gott zu ehren und anderen Freude zu machen.",
+          "bibelvers": "Epheser 2,10; 1. Petrus 4,10",
+          "inspirationstext": "[Name] hat besondere Talente, die Gott ihm/ihr geschenkt hat – und [Name] setzt sie ein. Diese künstlerische Begabung ist ein Segen für die Menschen um ihn/sie herum. [Name] versteht, dass Talente nicht für sich selbst da sind, sondern um anderen zu dienen und Gott zu ehren."
+        },
+        {
+          "name": "Lustig",
+          "beschreibung": "Sorgt für Freude und Leichtigkeit in der Gruppe. Hat einen guten Sinn für Humor, der andere aufheitert und verbindet, ohne andere zu verletzen.",
+          "bibelvers": "Sprüche 17,22; Johannes 15,11",
+          "inspirationstext": "[Name] bringt Leichtigkeit und Freude in jede Runde. Dieser Humor ist ein Geschenk – er entspannt, verbindet und macht das Miteinander schöner. [Name] versteht es, andere zum Lachen zu bringen, ohne dabei jemanden zu verletzen. Gott freut sich an dieser Lebensfröhlichkeit."
+        }
+      ]
+    },
+    {
+      "id": "ueberwinder",
+      "name": "Der Überwinder",
+      "farbe": "#fa5c33",
+      "eigenschaften": [
+        {
+          "name": "Mutig",
+          "beschreibung": "Wagemutig, tapfer, selbstbewusst, spricht offen. Spricht die Wahrheit, setzt sich für das ein, was in Gottes Augen richtig ist, spricht mit Selbstvertrauen, nimmt an Aktivitäten teil, bemüht sich, den Herrn zu verherrlichen.",
+          "bibelvers": "Philipper 1,20; Epheser 3,11-12; Psalm 138,3; Psalm 31,24",
+          "inspirationstext": "[Name] hat echten Mut – und das zeigt sich im Alltag. [Name] sagt, was er/sie denkt, auch wenn es nicht immer bequem ist, und setzt sich für das ein, was richtig ist. Dieser Mut kommt nicht aus Überheblichkeit, sondern aus dem Vertrauen auf Gott. [Name] ermutigt durch diese tapfere Art auch andere, aufzustehen."
+        },
+        {
+          "name": "Furchtlos",
+          "beschreibung": "Die Fähigkeit, Schwierigkeiten entschlossen und ohne Angst zu begegnen. Probiert neue Aktivitäten mit Freude aus, meistert Herausforderungen in dem Wissen, dass der Herr an seiner Seite ist.",
+          "bibelvers": "5. Mose 31,6; 2. Chronik 15,7",
+          "inspirationstext": "[Name] lässt sich von Hindernissen nicht aufhalten. Diese Furchtlosigkeit ist beeindruckend – [Name] geht auf neue Herausforderungen zu, statt vor ihnen zurückzuschrecken. Das Geheimnis dieser Stärke liegt in [Name]s Vertrauen auf Gott, der immer an seiner/ihrer Seite ist. Dieses Beispiel gibt anderen Mut."
+        },
+        {
+          "name": "Anleitend",
+          "beschreibung": "Leitet andere an und übernimmt Verantwortung in der Gruppe. Führt durch Beispiel, motiviert andere und übernimmt Initiative, wenn sie gebraucht wird.",
+          "bibelvers": "Matthäus 20,26-27; 1. Timotheus 4,12",
+          "inspirationstext": "[Name] übernimmt Verantwortung – auch dann, wenn niemand darum bittet. Diese anleitende Art macht [Name] zu einer wichtigen Stütze in der Gruppe. Andere folgen gerne, weil [Name] nicht befehlt, sondern vorangeht und mitarbeitet. Das ist echte Führung nach dem Vorbild Jesu."
+        }
+      ]
+    }
+  ]
+}

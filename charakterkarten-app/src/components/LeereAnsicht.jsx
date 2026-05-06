@@ -30,19 +30,19 @@ export default function LeereAnsicht({ onNeuesKind }) {
       {!formOffen ? (
         <button
           onClick={() => setFormOffen(true)}
-          className="bg-camissio-lila text-white rounded-2xl px-8 py-3 font-semibold text-base hover:bg-opacity-90 transition-colors"
+          className="bg-camp-akzent text-white rounded-2xl px-8 py-3 font-semibold text-base hover:opacity-90 transition-colors"
         >
           + Neues Kind anlegen
         </button>
       ) : (
-        <form onSubmit={submit} className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-sm border border-camissio-lila/20">
+        <form onSubmit={submit} className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-sm border border-camp-akzent/20">
           <h3 className="font-semibold text-camissio-dunkelblau mb-4">Neues Kind anlegen</h3>
           <input
             type="text"
             placeholder="Vor- und Nachname (z. B. Lukas Müller)"
             value={name}
             onChange={e => setName(e.target.value)}
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-camissio-lila text-camissio-dunkelblau mb-3"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-camp-akzent text-camissio-dunkelblau mb-3"
             autoFocus
           />
           <div className="mb-4">
@@ -55,8 +55,8 @@ export default function LeereAnsicht({ onNeuesKind }) {
                   onClick={() => setGeschlecht(val)}
                   className={`flex-1 text-xs py-2 rounded-xl border transition-colors ${
                     geschlecht === val
-                      ? 'bg-camissio-lila text-white border-camissio-lila'
-                      : 'border-gray-200 text-gray-500 hover:border-camissio-lila'
+                      ? 'bg-camp-akzent text-white border-camp-akzent'
+                      : 'border-gray-200 text-gray-500 hover:border-camp-akzent'
                   }`}
                 >
                   {label}
@@ -68,7 +68,7 @@ export default function LeereAnsicht({ onNeuesKind }) {
             <button
               type="submit"
               disabled={!name.trim()}
-              className="flex-1 bg-camissio-lila text-white rounded-xl py-2.5 font-semibold hover:bg-opacity-90 disabled:opacity-40 transition-colors"
+              className="flex-1 bg-camp-akzent text-white rounded-xl py-2.5 font-semibold hover:opacity-90 disabled:opacity-40 transition-colors"
             >
               Anlegen
             </button>

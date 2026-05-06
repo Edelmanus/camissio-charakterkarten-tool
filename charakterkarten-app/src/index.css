@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 :root {
+  --camp-akzent: #a1a5dd;
+  --camp-akzent-hell: #eaebf8;
+  --camp-akzent-text: #4a4f99;
   --camissio-dunkelblau: #1c4554;
   --camissio-petrol: #007d99;
   --camissio-lila: #a1a5dd;
@@ -95,6 +98,13 @@ input[type="range"]::-moz-range-thumb {
 .print-only {
   display: none;
 }
+
+/* Camp-Akzent Utilities — funktionieren mit CSS-Variable direkt */
+.bg-camp-akzent { background-color: var(--camp-akzent) !important; }
+.text-camp-akzent { color: var(--camp-akzent) !important; }
+.border-camp-akzent { border-color: var(--camp-akzent) !important; }
+.bg-camp-akzent-hell { background-color: var(--camp-akzent-hell) !important; }
+.ring-camp-akzent { --tw-ring-color: var(--camp-akzent) !important; }
 
 /* Highlight for adjective validation */
 .adjektiv-warnung {

@@ -1,29 +1,30 @@
-export default function Onboarding({ onWeiter }) {
+export default function Onboarding({ camp, onWeiter }) {
+  const akzent = camp?.farbe || '#a1a5dd';
   return (
-    <div className="min-h-screen bg-camissio-dunkelblau flex items-center justify-center p-4">
+    <div className="min-h-screen bg-camissio-greige flex items-center justify-center p-4">
       <div className="max-w-xl w-full">
         {/* Logo */}
         <div className="text-center mb-8">
           <img
-            src="/assets/youth-camp-logo-lila.png"
-            alt="CAMISSIO YOUTH CAMP Logo"
+            src={camp?.logo || '/assets/youth-camp-logo-lila.png'}
+            alt={camp?.vollname || 'CAMISSIO'}
             className="h-24 w-auto mx-auto mb-4"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
-          <h1 className="font-headline text-5xl text-camissio-lila tracking-wide">
+          <h1 className="font-headline text-5xl tracking-wide" style={{ color: akzent }}>
             CHARAKTERKARTEN
           </h1>
-          <p className="text-white/60 mt-2 font-body text-sm">
+          <p className="text-camissio-dunkelblau/50 mt-2 font-body text-sm">
             ...denn jeder soll von Jesus hören!
           </p>
         </div>
 
         {/* Was ist eine Charakterkarte? */}
-        <div className="bg-white/10 rounded-2xl p-6 mb-6">
-          <h2 className="text-white font-headline text-xl tracking-wide mb-3">
+        <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm">
+          <h2 className="text-camissio-dunkelblau font-headline text-xl tracking-wide mb-3">
             Was ist eine Charakterkarte?
           </h2>
-          <p className="text-white/80 text-sm leading-relaxed font-body">
+          <p className="text-camissio-dunkelblau/70 text-sm leading-relaxed font-body">
             Eine Charakterkarte ist eine persönliche Ermutigung für jedes Kind in deiner Gruppe.
             Du wählst zwei positive Eigenschaften aus, die das Kind wirklich auszeichnen,
             und schreibst einen kurzen, herzlichen Text — eine Mitgabe für nach dem Camp,
@@ -38,23 +39,24 @@ export default function Onboarding({ onWeiter }) {
             { nr: '2', titel: 'Auswählen', text: 'Wähle 2 passende Eigenschaften aus den Vorschlägen aus.' },
             { nr: '3', titel: 'Schreiben', text: 'Schreibe einen persönlichen, ermutigenden Text von 4–5 Sätzen.' },
           ].map(({ nr, titel, text }) => (
-            <div key={nr} className="bg-white/10 rounded-xl p-4 text-center">
-              <div className="w-8 h-8 rounded-full bg-camissio-lila text-white font-headline text-xl flex items-center justify-center mx-auto mb-2">
+            <div key={nr} className="bg-white rounded-xl p-4 text-center shadow-sm">
+              <div className="w-8 h-8 rounded-full text-white font-headline text-xl flex items-center justify-center mx-auto mb-2" style={{ backgroundColor: akzent }}>
                 {nr}
               </div>
-              <div className="text-white font-semibold text-sm mb-1">{titel}</div>
-              <div className="text-white/60 text-xs leading-relaxed">{text}</div>
+              <div className="text-camissio-dunkelblau font-semibold text-sm mb-1">{titel}</div>
+              <div className="text-camissio-dunkelblau/60 text-xs leading-relaxed">{text}</div>
             </div>
           ))}
         </div>
 
-        <p className="text-white/40 text-xs text-center mb-6">
+        <p className="text-camissio-dunkelblau/40 text-xs text-center mb-6">
           ℹ️ Die vollständige Anleitung findest du jederzeit oben rechts unter „Anleitung"
         </p>
 
         <button
           onClick={onWeiter}
-          className="w-full bg-camissio-lila text-white rounded-2xl py-4 font-headline text-2xl tracking-wide hover:bg-opacity-90 transition-colors"
+          className="w-full text-white rounded-2xl py-4 font-headline text-2xl tracking-wide hover:opacity-90 transition-opacity"
+          style={{ backgroundColor: akzent }}
         >
           LOSLEGEN →
         </button>
