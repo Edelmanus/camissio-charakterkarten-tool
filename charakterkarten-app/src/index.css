@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --camissio-dunkelblau: #1c4554;
+  --camissio-petrol: #007d99;
+  --camissio-lila: #a1a5dd;
+  --camissio-orange: #fa5c33;
+  --camissio-greige: #f0f2ed;
+  --camissio-summer-gruen: #00ab67;
+  --camissio-missi-gelb: #f5e563;
+  --camissio-cam-blau: #55c1c4;
+  --camissio-summer-pink: #de69a8;
+  --camissio-youth-rot: #f35b56;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--camissio-greige);
+  font-family: 'Nunito Sans', system-ui, sans-serif;
+  font-size: 16px;
+  color: var(--camissio-dunkelblau);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Custom range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--camissio-lila);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--camissio-lila);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #e8eae6;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--camissio-lila);
+  border-radius: 3px;
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
+
+/* Highlight for adjective validation */
+.adjektiv-warnung {
+  background-color: #fef08a;
+  border-radius: 2px;
+  text-decoration: underline;
+  text-decoration-color: #ca8a04;
+  text-underline-offset: 2px;
+}
