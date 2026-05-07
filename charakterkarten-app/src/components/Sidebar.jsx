@@ -50,11 +50,7 @@ function NeuesKindForm({ onAnlegen, onAbbrechen }) {
         >
           Anlegen
         </button>
-        <button
-          type="button"
-          onClick={onAbbrechen}
-          className="px-3 text-gray-400 hover:text-gray-600 text-sm"
-        >
+        <button type="button" onClick={onAbbrechen} className="px-3 text-gray-400 hover:text-gray-600 text-sm">
           ✕
         </button>
       </div>
@@ -62,88 +58,117 @@ function NeuesKindForm({ onAnlegen, onAbbrechen }) {
   );
 }
 
+function KindItem({ kind, istAktiv, onAktivieren, onLoeschen }) {
+  const [loeschenKonfirm, setLoeschenKonfirm] = useState(false);
+
+  return (
+    <div
+      className={`group flex items-center justify-between rounded-xl px-3 py-2.5 cursor-pointer transition-all ${
+        istAktiv
+          ? 'bg-camp-akzent-hell border border-camp-akzent/40'
+          : 'hover:bg-gray-50 border border-transparent'
+      }`}
+      onClick={() => onAktivieren(kind.id)}
+    >
+      <span className="text-sm text-camissio-dunkelblau truncate font-medium">{kind.name}</span>
+
+      {loeschenKonfirm ? (
+        <div className="flex gap-1 shrink-0" onClick={e => e.stopPropagation()}>
+          <button
+            onClick={() => { onLoeschen(kind.id); setLoeschenKonfirm(false); }}
+            className="text-xs bg-red-500 text-white rounded px-1.5 py-0.5"
+          >
+            Löschen
+          </button>
+          <button onClick={() => setLoeschenKonfirm(false)} className="text-xs text-gray-400 hover:text-gray-600 px-1">
+            ✕
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={(e) => { e.stopPropagation(); setLoeschenKonfirm(true); }}
+          className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 text-sm shrink-0 transition-opacity"
+          aria-label={`${kind.name} löschen`}
+        >
+          🗑
+        </button>
+      )}
+    </div>
+  );
+}
+
+function Sektion({ titel, farbe, kinder, aktivesKindId, onAktivieren, onLoeschen }) {
+  if (kinder.length === 0) return null;
+  return (
+    <div className="mb-1">
+      <div className="flex items-center gap-2 px-3 pt-3 pb-1.5">
+        <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: farbe }} />
+        <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">{titel}</span>
+        <span className="text-xs text-gray-300 ml-auto">{kinder.length}</span>
+      </div>
+      {kinder.map(kind => (
+        <KindItem
+          key={kind.id}
+          kind={kind}
+          istAktiv={kind.id === aktivesKindId}
+          onAktivieren={onAktivieren}
+          onLoeschen={onLoeschen}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeuesKind, onKindLoeschen }) {
   const [formOffen, setFormOffen] = useState(false);
-  const [loeschenKonfirm, setLoeschenKonfirm] = useState(null);
 
   const handleAnlegen = (name, geschlecht) => {
     onNeuesKind(name, geschlecht);
     setFormOffen(false);
   };
 
+  const entwurf = kinder.filter(k => !k.fertig && !k.korrigiert);
+  const fertig  = kinder.filter(k => k.fertig && !k.korrigiert);
+  const korrigiert = kinder.filter(k => k.korrigiert);
+
   return (
     <aside className="w-64 flex flex-col overflow-hidden shrink-0 h-full">
       <div className="p-4 border-b border-gray-100">
-        <h2 className="font-headline text-lg text-camissio-dunkelblau tracking-wide">
-          Meine Gruppe
-        </h2>
+        <h2 className="font-headline text-lg text-camissio-dunkelblau tracking-wide">Meine Gruppe</h2>
         <p className="text-xs text-gray-400 mt-0.5">{kinder.length} Kind{kinder.length !== 1 ? 'er' : ''}</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 space-y-1">
-        {kinder.map(kind => {
-          const istAktiv = kind.id === aktivesKindId;
-          let statusBadge, statusFarbe;
-          if (kind.korrigiert) {
-            statusBadge = '✓✓'; statusFarbe = 'text-green-500';
-          } else if (kind.fertig) {
-            statusBadge = '✓'; statusFarbe = 'text-camissio-petrol';
-          } else if (kind.text?.length > 20) {
-            statusBadge = '✍️'; statusFarbe = 'text-camissio-orange';
-          } else {
-            statusBadge = '○'; statusFarbe = 'text-gray-300';
-          }
-          const status = statusBadge;
-
-          return (
-            <div
-              key={kind.id}
-              className={`group flex items-center justify-between rounded-xl px-3 py-2.5 cursor-pointer transition-all ${
-                istAktiv
-                  ? 'bg-camp-akzent-hell border border-camp-akzent/40'
-                  : 'hover:bg-gray-50 border border-transparent'
-              }`}
-              onClick={() => onKindAktivieren(kind.id)}
-            >
-              <div className="flex items-center gap-2 min-w-0">
-                <span className={`text-sm shrink-0 ${statusFarbe}`}>{status}</span>
-                <span className="text-sm text-camissio-dunkelblau truncate font-medium">
-                  {kind.name}
-                </span>
-              </div>
-              {loeschenKonfirm === kind.id ? (
-                <div className="flex gap-1 shrink-0" onClick={e => e.stopPropagation()}>
-                  <button
-                    onClick={() => { onKindLoeschen(kind.id); setLoeschenKonfirm(null); }}
-                    className="text-xs bg-red-500 text-white rounded px-1.5 py-0.5"
-                  >
-                    Löschen
-                  </button>
-                  <button
-                    onClick={() => setLoeschenKonfirm(null)}
-                    className="text-xs text-gray-400 hover:text-gray-600 px-1"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={(e) => { e.stopPropagation(); setLoeschenKonfirm(kind.id); }}
-                  className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 text-sm shrink-0 transition-opacity"
-                  aria-label={`${kind.name} löschen`}
-                >
-                  🗑
-                </button>
-              )}
-            </div>
-          );
-        })}
-
+      <div className="flex-1 overflow-y-auto px-2 pb-2">
         {kinder.length === 0 && !formOffen && (
-          <p className="text-xs text-gray-400 text-center py-4 px-2">
-            Noch keine Kinder angelegt. Klicke auf „+ Neues Kind".
+          <p className="text-xs text-gray-400 text-center py-6 px-2">
+            Noch keine Kinder angelegt.
           </p>
         )}
+
+        <Sektion
+          titel="Entwurf"
+          farbe="#9ca3af"
+          kinder={entwurf}
+          aktivesKindId={aktivesKindId}
+          onAktivieren={onKindAktivieren}
+          onLoeschen={onKindLoeschen}
+        />
+        <Sektion
+          titel="Fertig"
+          farbe="#007d99"
+          kinder={fertig}
+          aktivesKindId={aktivesKindId}
+          onAktivieren={onKindAktivieren}
+          onLoeschen={onKindLoeschen}
+        />
+        <Sektion
+          titel="Korrigiert"
+          farbe="#22c55e"
+          kinder={korrigiert}
+          aktivesKindId={aktivesKindId}
+          onAktivieren={onKindAktivieren}
+          onLoeschen={onKindLoeschen}
+        />
 
         {formOffen && (
           <NeuesKindForm onAnlegen={handleAnlegen} onAbbrechen={() => setFormOffen(false)} />

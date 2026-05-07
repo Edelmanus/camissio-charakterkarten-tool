@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getKorrekturKinder, updateKorrektur } from '../utils/api';
+import MarkupEditor from './MarkupEditor';
 
 export default function KorrekturPortal({ passwort, onAbmelden }) {
   const [kinder, setKinder] = useState([]);
@@ -41,9 +42,13 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
     }
   }
 
-  async function handleTextSpeichern(kind, text, notiz) {
+  async function handleTextSpeichern(kind, text, textMarkup, notiz) {
     try {
-      const aktualisiert = await updateKorrektur(kind.id, { text, korrektur_notiz: notiz, korrigiert: true }, passwort);
+      const aktualisiert = await updateKorrektur(
+        kind.id,
+        { text, text_markup: textMarkup, korrektur_notiz: notiz, korrigiert: true },
+        passwort
+      );
       setKinder(prev => prev.map(k => k.id === aktualisiert.id ? aktualisiert : k));
       setAktivesId(null);
     } catch {
@@ -123,7 +128,7 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
             <KindDetail
               kind={aktivesKind}
               onKorrigiert={(k) => handleKorrigiert(k, !k.korrigiert)}
-              onSpeichern={handleTextSpeichern}
+              onSpeichern={(kind, text, markup, notiz) => handleTextSpeichern(kind, text, markup, notiz)}
             />
           ) : (
             <div className="h-full flex items-center justify-center">
@@ -137,18 +142,20 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
 }
 
 function KindDetail({ kind, onKorrigiert, onSpeichern }) {
-  const [text, setText] = useState(kind.text);
+  const [markup, setMarkup] = useState(kind.text_markup || '');
   const [notiz, setNotiz] = useState(kind.korrektur_notiz || '');
   const [speichern, setSpeichern] = useState(false);
+  // key erzwingt Re-Mount des Editors bei Kartenwechsel
+  const editorKey = kind.id;
 
   useEffect(() => {
-    setText(kind.text);
+    setMarkup(kind.text_markup || '');
     setNotiz(kind.korrektur_notiz || '');
   }, [kind.id]);
 
   async function handleSpeichern() {
     setSpeichern(true);
-    await onSpeichern(kind, text, notiz);
+    await onSpeichern(kind, kind.text, markup, notiz);
     setSpeichern(false);
   }
 
@@ -192,14 +199,17 @@ function KindDetail({ kind, onKorrigiert, onSpeichern }) {
         </div>
       )}
 
-      {/* Text-Editor */}
+      {/* Markup-Editor */}
       <div className="mb-4">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Charaktertext</p>
-        <textarea
-          value={text}
-          onChange={e => setText(e.target.value)}
-          rows={8}
-          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-camissio-dunkelblau focus:outline-none focus:ring-2 focus:ring-camissio-dunkelblau/20 resize-none"
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          Charaktertext
+          <span className="ml-2 normal-case font-normal text-gray-400">— Text markieren oder durchstreichen</span>
+        </p>
+        <MarkupEditor
+          key={editorKey}
+          initialHtml={kind.text_markup || ''}
+          plainText={kind.text}
+          onChange={setMarkup}
         />
       </div>
 

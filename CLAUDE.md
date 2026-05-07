@@ -1,186 +1,164 @@
 # CAMISSIO Charakterkarten-Tool
 
-Web-App für alle CAMISSIO-Mitarbeiter zum Erstellen persönlicher Charakterkarten für Camp-Teilnehmer. Evangelistisches Camp-Ministerium der Deutschen Zeltmission.
+Web-App für CAMISSIO-Gruppenleiter zum Erstellen persönlicher Charakterkarten für Camp-Teilnehmer. Evangelistisches Camp-Ministerium der Deutschen Zeltmission.
 
 ## Projektstruktur
 
 ```
 Charakterkarten Tool/
-├── charakterkarten-app/      ← React + Vite App (hier wird gearbeitet)
+├── charakterkarten-app/          ← React + Vite Frontend
 │   ├── public/
-│   │   ├── assets/           ← Logos (PNG)
-│   │   │   ├── camissio-logo.png         ← Haupt-CAMISSIO-Logo (für QUIETSCHFIDEL)
-│   │   │   ├── camp2go-logo.png          ← CAMP2GO Logo orange
-│   │   │   ├── youth-camp-logo-lila.png  ← YOUTH CAMP Logo lila
-│   │   │   ├── herzanker-dunkelblau.png  ← Symbol für Header (mobile)
-│   │   │   └── ...weitere Logos
+│   │   ├── assets/               ← CAMISSIO-Logos (PNG)
 │   │   └── data/
-│   │       ├── eigenschaften-youth-camp.json   ← 70+ Eigenschaften YOUTH CAMP
-│   │       ├── eigenschaften-camp2go.json       ← Eigenschaften CAMP2GO (vorerst identisch)
-│   │       └── eigenschaften-quietschfidel.json ← Eigenschaften QUIETSCHFIDEL (vorerst identisch)
+│   │       ├── eigenschaften-youth-camp.json
+│   │       ├── eigenschaften-camp2go.json
+│   │       └── eigenschaften-quietschfidel.json
 │   └── src/
 │       ├── config/
-│       │   └── camps.js      ← Zentrale Camp-Konfiguration (Farben, Logos, Storage-Keys)
-│       ├── components/       ← Alle UI-Komponenten
+│       │   └── camps.js          ← Camp-Konfiguration (Farben, Logos, IDs)
+│       ├── components/           ← Alle UI-Komponenten
 │       ├── utils/
-│       │   ├── storage.js    ← Camp-aware LocalStorage-Logik
-│       │   └── validierung.js ← Texthilfen & Live-Warnungen
-│       ├── App.jsx           ← Root-Komponente, Camp-Flow, State-Management
-│       └── index.css         ← Tailwind + CAMISSIO CSS-Variablen + Camp-Akzent-Utilities
-├── referenzen/               ← INTERN, nicht im Git (gitignore)
-│   ├── Charakterkarten YOUTH CAMP.docx
-│   ├── CAMISSIO Logos/       ← Alle Originallogos
-│   └── 01_CAMISSIO_Corporate Design Manual.pdf
-└── CLAUDE_CODE_PROMPT.md     ← Ursprünglicher Projektauftrag
+│       │   ├── api.js            ← API-Client (fetch-Wrapper, Session)
+│       │   ├── storage.js        ← Session-Hilfsfunktionen (sessionStorage)
+│       │   └── validierung.js    ← Texthilfen & Live-Warnungen
+│       ├── App.jsx               ← Root: Session-Flow, API-State
+│       └── index.css             ← Tailwind + CAMISSIO CSS-Variablen
+├── charakterkarten-backend/      ← Node.js + Express + node:sqlite Backend
+│   ├── server.js                 ← Express-Server (Port 3001)
+│   ├── db/
+│   │   └── database.js           ← DB-Init, Schema, Camp-Seed (50 Standorte)
+│   ├── routes/
+│   │   ├── camps.js
+│   │   ├── kinder.js
+│   │   └── korrektur.js
+│   └── package.json
+└── referenzen/                   ← INTERN, nicht im Git
 ```
 
 ## Entwicklung starten
 
 ```bash
+# Terminal 1: Backend (Node ≥ 22.5 erforderlich für node:sqlite)
+cd charakterkarten-backend
+npm install
+node server.js          # Port 3001
+
+# Terminal 2: Frontend
 cd charakterkarten-app
-npm install      # nur beim ersten Mal
-npm run dev      # startet auf http://localhost:5173
-npm run build    # Produktions-Build → dist/
+npm install
+npm run dev             # Port 5173 (proxyt /api/* → :3001)
 ```
 
 ## Tech Stack
 
-- **React 18 + Vite 5** — Framework & Build
+- **React 18 + Vite** — Framework & Build
 - **Tailwind CSS v3** — Styling (Custom Theme mit CAMISSIO-Farben)
 - **Recharts** — Radar-Diagramm
 - **react-to-print** — PDF/Druckexport
-- **LocalStorage** — Persistenz, kein Backend
+- **Node.js + Express** — Backend-API
+- **node:sqlite** — SQLite (eingebaut in Node ≥ 22.5, kein nativer Addon)
+- **sessionStorage** — Aktive Session (Camp + Gruppe)
 
 ## CAMISSIO Corporate Design
 
 ```css
 --camissio-dunkelblau: #1c4554   /* Primärfarbe, Text */
 --camissio-petrol:     #007d99   /* Links, Akzente */
---camissio-lila:       #a1a5dd   /* YOUTH CAMP Farbe */
+--camissio-lila:       #a1a5dd   /* YOUTH CAMP Farbe, Buttons */
 --camissio-orange:     #fa5c33   /* CAMP2GO Farbe */
---camissio-greige:     #f0f2ed   /* App-Hintergrund */
+--camissio-greige:     #f0f2ed   /* Hintergrund */
 --camissio-summer-gruen: #00ab67 /* QUIETSCHFIDEL Farbe */
 ```
 
 - **Headlines:** Bebas Neue (Google Fonts)
 - **Fließtext:** Nunito Sans (Google Fonts)
-
-## Camp-Module
-
-Die App unterstützt drei Camp-Module, konfiguriert in `src/config/camps.js`:
-
-| Camp | Farbe | Zielgruppe | Storage-Key |
-|---|---|---|---|
-| **YOUTH CAMP** | Lila `#a1a5dd` | Teens 12–17 J. | `camissio_charakterkarten_youth-camp` |
-| **CAMP2GO** | Orange `#fa5c33` | Kinder 6–12 J. | `camissio_charakterkarten_camp2go` |
-| **QUIETSCHFIDEL** | Grün `#00ab67` | Kinder/Jugend mit Beeinträchtigungen | `camissio_charakterkarten_quietschfidel` |
-
-Das gewählte Camp wird unter `camissio_aktives_camp` gespeichert.
-
-### camps.js — Struktur eines Camp-Eintrags
-
-```js
-{
-  id: 'youth-camp',
-  name: 'YOUTH CAMP',
-  vollname: 'CAMISSIO YOUTH CAMP',
-  zielgruppe: '...',
-  beschreibung: '...',
-  farbe: '#a1a5dd',       // Akzentfarbe (Buttons, Titel)
-  farbeHell: '#eaebf8',   // Heller Hintergrund (Camp-Karte in Auswahl)
-  farbeText: '#4a4f99',   // Textfarbe auf hellem Hintergrund
-  logo: '/assets/youth-camp-logo-lila.png',
-  eigenschaftenFile: '/data/eigenschaften-youth-camp.json',
-  storageKey: 'camissio_charakterkarten_youth-camp',
-}
-```
-
-**Neue Camps hinzufügen:** Eintrag in `CAMPS`-Array in `camps.js` ergänzen + JSON-Datei in `public/data/` anlegen.
-
-## User Flow
-
-1. **CampAuswahl** — Beim ersten Öffnen oder nach „Camp wechseln": 3 Camp-Karten auf Greige-Hintergrund
-2. **Onboarding** — Beim ersten Besuch je Camp: Erklärung + LOSLEGEN (campspezifisch eingefärbt)
-3. **Haupt-App** — Header + Sidebar (Gruppenliste) + KindEditor; letztes Camp wird gemerkt
+- **Logos:** `public/assets/`
 
 ## Wichtige Komponenten
 
 | Datei | Aufgabe |
 |---|---|
-| `App.jsx` | Camp-Flow (CampAuswahl → Onboarding → App), State, Theming |
-| `CampAuswahl.jsx` | Camp-Picker-Bildschirm, zeigt alle 3 Module |
-| `Header.jsx` | Weißer Pill-Header (CAMISSIO-Website-Stil), Camp-Name, Wechsel-Button |
-| `Sidebar.jsx` | Gruppen-Übersicht als weiße Card, Kind anlegen/löschen |
-| `KindEditor.jsx` | Haupt-Editor: Slider, Vorschläge, Texteditor, Export |
+| `App.jsx` | Session-Flow (CampAuswahl → GruppenApp / KorrekturPortal), API-State |
+| `CampAuswahl.jsx` | 3-Schritt-Login: Camp-Typ → Standort → Gruppe + Korrektur-Portal-Button |
+| `KorrekturPortal.jsx` | Passwortgeschützte Korrektur-Ansicht (alle fertigen Karten) |
+| `KorrigiertAnsicht.jsx` | Read-only Ansicht korrigierter Karten beim Gruppenleiter (inkl. Markup) |
+| `MarkupEditor.jsx` | ContentEditable-Editor mit Toolbar (Markieren/Durchstreichen) |
+| `KindEditor.jsx` | Haupt-Editor: Slider, Vorschläge, Texteditor, Export. Bei `korrigiert=true` → KorrigiertAnsicht |
+| `Sidebar.jsx` | 3 Sektionen: Entwurf / Fertig / Korrigiert |
+| `Header.jsx` | Pill-Header: Camp-Name + Standort + Gruppe |
 | `RadarChart.jsx` | Recharts-Radardiagramm der 7 Wesenszüge |
 | `TextEditor.jsx` | Textarea + Live-Validierung (Regel 4/7/9) + Formulierungen |
 | `EigenschaftDetail.jsx` | Modal: Beschreibung, Bibelvers, Inspirationstext |
 | `AnleitungModal.jsx` | Die 15 Regeln aus dem Manual (wortgetreu) |
 | `KarteDruck.jsx` | Druckvorlage A5 im CAMISSIO-Design (forwardRef) |
-| `Onboarding.jsx` | Erster-Start-Bildschirm je Camp, campspezifisch eingefärbt |
-| `LeereAnsicht.jsx` | Platzhalter wenn kein Kind aktiv |
 
-## Dynamisches Theming (CSS-Variablen)
+## Camp-Konfiguration (`config/camps.js`)
 
-Die Akzentfarbe wechselt automatisch mit dem Camp. In `App.jsx` wird gesetzt:
+Drei Camp-Module mit je eigenem Styling:
 
-```js
-document.documentElement.style.setProperty('--camp-akzent', camp.farbe);
-document.documentElement.style.setProperty('--camp-akzent-hell', camp.farbeHell);
+| Camp | ID | Farbe | Zielgruppe |
+|---|---|---|---|
+| YOUTH CAMP | `youth-camp` | Lila `#a1a5dd` | Teens 12–17 J. |
+| CAMP2GO | `camp2go` | Orange `#fa5c33` | Kinder 6–12 J. |
+| QUIETSCHFIDEL | `quietschfidel` | Grün `#00ab67` | Kinder/Jugend mit Beeinträchtigungen |
+
+Das dynamische Theming setzt CSS-Variablen in `App.jsx` (`--camp-akzent`, `--camp-akzent-hell`, `--camp-akzent-text`).
+
+## Datenbank-Schema (SQLite)
+
+```sql
+camps (id, typ, standort, code)
+-- 46× CAMP2GO (alle Standorte), 2× YOUTH CAMP (YC1/YC2), 2× QUIETSCHFIDEL (Q1/Q2)
+
+kinder (
+  id TEXT,              -- UUID
+  camp_id INTEGER,      -- FK → camps.id
+  gruppe TEXT,          -- 'J1'..'J10' / 'M1'..'M10'
+  name TEXT,
+  geschlecht TEXT,      -- 'männlich' | 'weiblich' | 'keine'
+  scores TEXT,          -- JSON: { beziehungsstark:1-5, anpacker:1-5, ... }
+  gewaehlte_eigenschaften TEXT,  -- JSON: [{ name, beschreibung, bibelvers, katFarbe }]
+  bibelvers TEXT,
+  text TEXT,            -- Fließtext des Gruppenleiters
+  text_markup TEXT,     -- HTML mit Korrektur-Markierungen (highlights, strikethrough)
+  fertig INTEGER,       -- 0/1
+  korrigiert INTEGER,   -- 0/1
+  korrektur_notiz TEXT,
+  created_at TEXT,
+  updated_at TEXT
+)
 ```
 
-In `index.css` stehen die Utility-Klassen (mit `!important`, da Tailwind CSS-Variablen nicht nativ als HEX unterstützt):
-
-```css
-.bg-camp-akzent      { background-color: var(--camp-akzent) !important; }
-.text-camp-akzent    { color: var(--camp-akzent) !important; }
-.border-camp-akzent  { border-color: var(--camp-akzent) !important; }
-.bg-camp-akzent-hell { background-color: var(--camp-akzent-hell) !important; }
-```
-
-Komponenten, die `bg-camp-akzent` verwenden: `Sidebar.jsx`, `LeereAnsicht.jsx`.
-
-## UI-Layout (Card-Stil)
-
-Alle drei Hauptbereiche (Header, Sidebar, Main) sind weiße Cards auf Greige-Hintergrund:
+## Session-Flow
 
 ```
-┌─────────────────────────────────────────┐  ← Header: bg-white rounded-2xl shadow-sm (pill)
-├──────────────┬──────────────────────────┤     Abstand: px-3 pt-3 pb-0
-│ Sidebar      │ Main                     │  ← beide: bg-white rounded-2xl shadow-sm
-│ (w-64 Card)  │ (flex-1 Card)            │     Abstand: p-3 gap-3
-└──────────────┴──────────────────────────┘
+Startseite (CampAuswahl)
+  ├── Gruppenleiter: Typ → Standort → Gruppe → sessionStorage
+  │     └── GruppenApp: Kinder aus API laden, bearbeiten, fertig markieren
+  │           └── Korrigierte Karte: KorrigiertAnsicht (read-only, Markup sichtbar)
+  └── Korrektur-Team: Passwort eingeben
+        └── KorrekturPortal: alle fertigen Karten, Markup-Editor, Notiz, korrigiert markieren
 ```
 
-## Datenstruktur (LocalStorage)
+## API-Routen
 
-```js
-// Key: 'camissio_aktives_camp'  → z.B. "youth-camp"
+| Methode | Pfad | Beschreibung |
+|---|---|---|
+| `GET` | `/api/camps?typ=...` | Camps nach Typ |
+| `GET/POST` | `/api/kinder` | Kinder einer Gruppe |
+| `PUT` | `/api/kinder/:id` | Kind aktualisieren (scores, text, eigenschaften…) |
+| `PUT` | `/api/kinder/:id/fertig` | Fertig-Status setzen (setzt korrigiert zurück) |
+| `DELETE` | `/api/kinder/:id` | Kind löschen |
+| `POST` | `/api/korrektur/login` | Passwort prüfen |
+| `GET` | `/api/korrektur/kinder` | Alle fertigen Karten (Header: `x-korrektur-password`) |
+| `PUT` | `/api/korrektur/kinder/:id` | Markup + Notiz + korrigiert speichern |
 
-// Key: 'camissio_charakterkarten_youth-camp' (je Camp eigener Key)
-{
-  onboardingGesehen: true,
-  aktivesKindId: "uuid",
-  kinder: [{
-    id: "uuid",
-    name: "Lukas Müller",
-    geschlecht: "männlich" | "weiblich" | "keine",
-    scores: {
-      beziehungsstark: 1-5,
-      anpacker: 1-5,
-      unaufhaltsam: 1-5,
-      verwurzelt: 1-5,
-      gewissenhaft: 1-5,
-      vorbild: 1-5,
-      anbeter: 1-5
-    },
-    gewaehltEigenschaften: [{ name, beschreibung, bibelvers, inspirationstext, katId, katFarbe }],
-    bibelvers: "Jeremia 29,11",
-    text: "Persönlicher Fließtext...",
-    fertig: false
-  }]
-}
-```
+## Validierungsregeln im TextEditor
+
+- **Regel 4** — Adjektiv der gewählten Eigenschaft im Text → gelbe Warnung
+- **Regel 7** — Vergangenheitsformen (war, hatte, ging…) → blaue Warnung
+- **Regel 9** — „nicht" im Text → orange Warnung
+- **Wortzähler** — Ziel: 60–100 Wörter (grau → grün → orange)
 
 ## Eigenschaften-JSON — Struktur
 
@@ -201,15 +179,6 @@ Alle drei Hauptbereiche (Header, Sidebar, Main) sind weiße Cards auf Greige-Hin
   }]
 }
 ```
-
-**Offener Punkt:** Camp-spezifische Wesenskategorien und Eigenschaften für CAMP2GO und QUIETSCHFIDEL ausformulieren (aktuell identisch mit YOUTH CAMP).
-
-## Validierungsregeln im TextEditor
-
-- **Regel 4** — Adjektiv der gewählten Eigenschaft im Text → gelbe Warnung
-- **Regel 7** — Vergangenheitsformen (war, hatte, ging…) → blaue Warnung
-- **Regel 9** — „nicht" im Text → orange Warnung
-- **Wortzähler** — Ziel: 60–100 Wörter (grau → grün → orange)
 
 ## GitHub
 

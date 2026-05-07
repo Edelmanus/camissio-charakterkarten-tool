@@ -4,6 +4,7 @@ import RadarChart from './RadarChart';
 import EigenschaftDetail from './EigenschaftDetail';
 import TextEditor from './TextEditor';
 import KarteDruck from './KarteDruck';
+import KorrigiertAnsicht from './KorrigiertAnsicht';
 import { sindZuAehnlich } from '../utils/validierung';
 
 // Die 7 Wesenszug-Kategorien mit Scoring-Slidern (laut Manual)
@@ -64,6 +65,9 @@ function ScoreSlider({ katId, name, value, onChange }) {
 }
 
 export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
+  if (kind.korrigiert) {
+    return <KorrigiertAnsicht kind={kind} />;
+  }
   const [eigenschaften, setEigenschaften] = useState(null);
   const [detailEigenschaft, setDetailEigenschaft] = useState(null);
   const [aehnlichHinweis, setAehnlichHinweis] = useState(false);

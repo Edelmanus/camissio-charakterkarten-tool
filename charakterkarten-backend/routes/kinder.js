@@ -107,6 +107,7 @@ function parseKind(row) {
     gewaehltEigenschaften: JSON.parse(row.gewaehlte_eigenschaften),
     fertig: row.fertig === 1,
     korrigiert: row.korrigiert === 1,
+    text_markup: row.text_markup || '',
   };
 }
 

@@ -8,6 +8,13 @@ const db = new DatabaseSync(DB_PATH);
 db.exec(`PRAGMA journal_mode = WAL`);
 db.exec(`PRAGMA foreign_keys = ON`);
 
+// Migration: text_markup Spalte falls noch nicht vorhanden
+try {
+  db.exec(`ALTER TABLE kinder ADD COLUMN text_markup TEXT NOT NULL DEFAULT ''`);
+} catch {
+  // Spalte existiert bereits
+}
+
 db.exec(`
   CREATE TABLE IF NOT EXISTS camps (
     id       INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -42,15 +42,16 @@ router.put('/kinder/:id', authMiddleware, (req, res) => {
   const kind = db.prepare('SELECT * FROM kinder WHERE id = ?').get(id);
   if (!kind) return res.status(404).json({ error: 'Nicht gefunden' });
 
-  const { korrigiert, korrektur_notiz, text } = req.body;
+  const { korrigiert, korrektur_notiz, text, text_markup } = req.body;
   const now = new Date().toISOString();
 
   db.prepare(`
-    UPDATE kinder SET korrigiert = ?, korrektur_notiz = ?, text = ?, updated_at = ? WHERE id = ?
+    UPDATE kinder SET korrigiert = ?, korrektur_notiz = ?, text = ?, text_markup = ?, updated_at = ? WHERE id = ?
   `).run(
     korrigiert ? 1 : 0,
     korrektur_notiz ?? kind.korrektur_notiz,
     text ?? kind.text,
+    text_markup ?? kind.text_markup ?? '',
     now, id
   );
 

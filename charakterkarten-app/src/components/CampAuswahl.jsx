@@ -111,13 +111,8 @@ export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
                   className="group w-full rounded-2xl p-4 text-left transition-all duration-200 hover:scale-[1.01] hover:shadow-lg focus:outline-none"
                   style={{ backgroundColor: camp.farbeHell }}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center"
-                      style={{ backgroundColor: camp.farbe }}>
-                      <img src={camp.logo} alt={camp.name} className="h-7 w-auto object-contain"
-                        onError={e => { e.target.style.display = 'none'; }} />
-                    </div>
-                    <div className="flex-1">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
                       <div className="font-headline text-xl tracking-wide" style={{ color: camp.farbeText }}>
                         {camp.name}
                       </div>
