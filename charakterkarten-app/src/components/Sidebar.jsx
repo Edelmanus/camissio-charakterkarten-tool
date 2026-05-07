@@ -83,8 +83,17 @@ export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeu
       <div className="flex-1 overflow-y-auto p-3 space-y-1">
         {kinder.map(kind => {
           const istAktiv = kind.id === aktivesKindId;
-          const status = kind.fertig ? '✓' : kind.text?.length > 20 ? '✍️' : '○';
-          const statusFarbe = kind.fertig ? 'text-camissio-summer-gruen' : kind.text?.length > 20 ? 'text-camissio-orange' : 'text-gray-300';
+          let statusBadge, statusFarbe;
+          if (kind.korrigiert) {
+            statusBadge = '✓✓'; statusFarbe = 'text-green-500';
+          } else if (kind.fertig) {
+            statusBadge = '✓'; statusFarbe = 'text-camissio-petrol';
+          } else if (kind.text?.length > 20) {
+            statusBadge = '✍️'; statusFarbe = 'text-camissio-orange';
+          } else {
+            statusBadge = '○'; statusFarbe = 'text-gray-300';
+          }
+          const status = statusBadge;
 
           return (
             <div

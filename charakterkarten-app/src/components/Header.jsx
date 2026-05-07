@@ -1,4 +1,4 @@
-export default function Header({ camp, onAnleitung, onSidebarToggle, sidebarOffen, anzahlKinder, onCampWechseln }) {
+export default function Header({ camp, session, onAnleitung, onSidebarToggle, sidebarOffen, anzahlKinder, onCampWechseln }) {
   return (
     <header className="bg-camissio-greige px-3 pt-3 pb-0">
       <div
@@ -42,7 +42,7 @@ export default function Header({ camp, onAnleitung, onSidebarToggle, sidebarOffe
               {camp.name}
             </div>
             <div className="text-xs text-camissio-dunkelblau/40 leading-tight font-body tracking-wide">
-              Charakterkarten-Tool
+              {session ? `${session.campStandort} · Gruppe ${session.gruppe}` : 'Charakterkarten-Tool'}
             </div>
           </div>
         </div>

@@ -63,7 +63,7 @@ function ScoreSlider({ katId, name, value, onChange }) {
   );
 }
 
-export default function KindEditor({ kind, camp, onUpdate }) {
+export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
   const [eigenschaften, setEigenschaften] = useState(null);
   const [detailEigenschaft, setDetailEigenschaft] = useState(null);
   const [aehnlichHinweis, setAehnlichHinweis] = useState(false);
@@ -131,7 +131,8 @@ export default function KindEditor({ kind, camp, onUpdate }) {
   };
 
   const fertigToggle = () => {
-    onUpdate({ fertig: !kind.fertig });
+    if (onFertigToggle) onFertigToggle(!kind.fertig);
+    else onUpdate({ fertig: !kind.fertig });
   };
 
   const vorname = kind.name.split(' ')[0];
