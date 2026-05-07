@@ -72,7 +72,7 @@ export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeu
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-100 flex flex-col overflow-hidden shrink-0">
+    <aside className="w-64 flex flex-col overflow-hidden shrink-0 h-full">
       <div className="p-4 border-b border-gray-100">
         <h2 className="font-headline text-lg text-camissio-dunkelblau tracking-wide">
           Meine Gruppe

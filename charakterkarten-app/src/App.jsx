@@ -124,23 +124,25 @@ function CampApp({ camp, anleitungOffen, setAnleitungOffen, sidebarOffen, setSid
         onCampWechseln={onCampVerlassen}
       />
 
-      <div className="flex" style={{ height: 'calc(100vh - 72px)' }}>
+      <div className="flex gap-3 p-3" style={{ height: 'calc(100vh - 72px)' }}>
         <div className={`
           shrink-0 transition-all duration-200
           md:relative md:translate-x-0
           ${sidebarOffen ? 'w-64' : 'w-0 overflow-hidden'}
         `}>
-          <Sidebar
-            kinder={state.kinder}
-            aktivesKindId={state.aktivesKindId}
-            camp={camp}
-            onKindAktivieren={kindAktivieren}
-            onNeuesKind={neuesKindAnlegen}
-            onKindLoeschen={kindLoeschen}
-          />
+          <div className="bg-white rounded-2xl shadow-sm h-full overflow-hidden">
+            <Sidebar
+              kinder={state.kinder}
+              aktivesKindId={state.aktivesKindId}
+              camp={camp}
+              onKindAktivieren={kindAktivieren}
+              onNeuesKind={neuesKindAnlegen}
+              onKindLoeschen={kindLoeschen}
+            />
+          </div>
         </div>
 
-        <main className="flex-1 overflow-y-auto p-3 md:p-6 min-w-0">
+        <main className="flex-1 overflow-y-auto min-w-0 bg-white rounded-2xl shadow-sm p-3 md:p-6">
           {aktiveKind ? (
             <KindEditor
               kind={aktiveKind}

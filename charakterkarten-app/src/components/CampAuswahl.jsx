@@ -36,18 +36,6 @@ export default function CampAuswahl({ onCampGewaehlt }) {
               style={{ backgroundColor: camp.farbeHell }}
             >
               <div className="flex items-center gap-4">
-                <div
-                  className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center"
-                  style={{ backgroundColor: camp.farbe }}
-                >
-                  <img
-                    src={camp.logo}
-                    alt={camp.vollname}
-                    className="h-8 w-auto object-contain"
-                    onError={(e) => { e.target.style.display = 'none'; }}
-                  />
-                </div>
-
                 <div className="flex-1 min-w-0">
                   <div
                     className="font-headline text-2xl tracking-wide leading-none mb-1"
