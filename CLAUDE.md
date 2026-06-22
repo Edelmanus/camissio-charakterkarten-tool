@@ -186,3 +186,45 @@ Startseite (CampAuswahl)
 https://github.com/Edelmanus/camissio-charakterkarten-tool
 Branch: main
 ```
+
+## Deployment (Live seit Juni 2026)
+
+**URL:** https://charakterkarten.camissio.de
+
+**Server:** Hetzner CX22 (2 vCPU, 4 GB RAM) — Ubuntu 24.04
+**IP:** 46.225.74.106
+**DNS:** A-Record bei All-Inkl (camissio.de) → Hetzner-IP
+
+### Stack auf dem Server
+- **Node 22** — Backend-Runtime
+- **PM2** — Prozessmanager, startet automatisch nach Reboot (`pm2-root.service`)
+- **Caddy** — Webserver, HTTPS via Let's Encrypt, Reverse Proxy für `/api/*`
+
+### Pfade auf dem Server
+```
+/opt/charakterkarten/                        ← Git-Repo (git clone)
+  charakterkarten-backend/
+    server.js                                ← läuft via PM2 auf Port 3001
+    .env                                     ← KORREKTUR_PASSWORT, PORT (nicht im Git!)
+    backups/                                 ← tägl. SQLite-Backups (nicht im Git)
+  charakterkarten-app/
+    dist/                                    ← Vite Build, wird von Caddy serviert
+/etc/caddy/Caddyfile                         ← Caddy-Konfiguration
+```
+
+### Deployment-Befehle (Update einspielen)
+```bash
+ssh root@46.225.74.106
+cd /opt/charakterkarten
+git pull
+cd charakterkarten-backend && npm install
+cd ../charakterkarten-app && npm install && npm run build
+pm2 restart charakterkarten
+```
+
+### Backup
+Cronjob läuft täglich um 3 Uhr: `/opt/charakterkarten/charakterkarten-backend/backup.sh`
+SQLite-Backups in `backups/`, 30 Tage Aufbewahrung.
+
+### Saison
+Aktuelle Saison: `sommer_2026` — in `database.js` und `korrektur.js` für nächstes Jahr anpassen.
