@@ -43,10 +43,10 @@ function KindItem({ kind, istAktiv, onAktivieren, onLoeschen }) {
 
   return (
     <div
-      className={`group flex items-center justify-between rounded-xl px-3 py-2.5 cursor-pointer transition-all ${
+      className={`group flex items-center justify-between rounded-xl px-3 py-3 md:py-2.5 cursor-pointer transition-all ${
         istAktiv
           ? 'bg-camp-akzent-hell border border-camp-akzent/40'
-          : 'hover:bg-gray-50 border border-transparent'
+          : 'hover:bg-gray-50 active:bg-gray-100 border border-transparent'
       }`}
       onClick={() => onAktivieren(kind.id)}
     >
@@ -67,7 +67,7 @@ function KindItem({ kind, istAktiv, onAktivieren, onLoeschen }) {
       ) : (
         <button
           onClick={(e) => { e.stopPropagation(); setLoeschenKonfirm(true); }}
-          className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 text-sm shrink-0 transition-opacity"
+          className="text-gray-300 hover:text-red-400 active:text-red-500 text-sm shrink-0 p-1"
           aria-label={`${kind.name} löschen`}
         >
           🗑
@@ -107,13 +107,12 @@ function geschlechtAusGruppe(gruppe) {
   return 'keine';
 }
 
-export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeuesKind, onKindLoeschen, gruppe }) {
-  const [formOffen, setFormOffen] = useState(false);
+export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeuesKind, onKindLoeschen, gruppe, formOffen, onFormOffenChange }) {
   const geschlechtVorgabe = geschlechtAusGruppe(gruppe);
 
   const handleAnlegen = (name, geschlecht) => {
     onNeuesKind(name, geschlecht);
-    setFormOffen(false);
+    onFormOffenChange(false);
   };
 
   const entwurf = kinder.filter(k => !k.fertig && !k.korrigiert);
@@ -121,7 +120,7 @@ export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeu
   const korrigiert = kinder.filter(k => k.korrigiert);
 
   return (
-    <aside className="w-64 flex flex-col overflow-hidden shrink-0 h-full">
+    <aside className="w-full md:w-64 flex flex-col overflow-hidden shrink-0 h-full">
       <div className="p-4 border-b border-gray-100">
         <h2 className="font-headline text-lg text-camissio-dunkelblau tracking-wide">Meine Gruppe</h2>
         <p className="text-xs text-gray-400 mt-0.5">{kinder.length} Kind{kinder.length !== 1 ? 'er' : ''}</p>
@@ -160,14 +159,14 @@ export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeu
         />
 
         {formOffen && (
-          <NeuesKindForm onAnlegen={handleAnlegen} onAbbrechen={() => setFormOffen(false)} geschlechtVorgabe={geschlechtVorgabe} />
+          <NeuesKindForm onAnlegen={handleAnlegen} onAbbrechen={() => onFormOffenChange(false)} geschlechtVorgabe={geschlechtVorgabe} />
         )}
       </div>
 
       <div className="p-3 border-t border-gray-100">
         {!formOffen && (
           <button
-            onClick={() => setFormOffen(true)}
+            onClick={() => onFormOffenChange(true)}
             className="w-full flex items-center justify-center gap-2 bg-camp-akzent text-white rounded-xl py-2.5 text-sm font-semibold hover:opacity-90 transition-colors"
           >
             <span>+</span>

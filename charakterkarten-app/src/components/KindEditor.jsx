@@ -33,10 +33,10 @@ const KATEGORIE_FARBEN = {
 function ScoreSlider({ katId, name, value, onChange }) {
   const farbe = KATEGORIE_FARBEN[katId] || '#a1a5dd';
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 py-0.5">
       <div
-        className="shrink-0 leading-tight text-camissio-dunkelblau font-semibold"
-        style={{ fontSize: '11px', width: '140px' }}
+        className="shrink-0 leading-tight text-camissio-dunkelblau font-semibold w-28 md:w-36"
+        style={{ fontSize: '11px' }}
       >
         {name}
       </div>
@@ -47,7 +47,7 @@ function ScoreSlider({ katId, name, value, onChange }) {
           max="5"
           value={value}
           onChange={e => onChange(parseInt(e.target.value))}
-          className="flex-1 min-w-0"
+          className="flex-1 min-w-0 h-2 md:h-auto"
           style={{ accentColor: farbe }}
           aria-label={`${name}: ${value} von 5`}
         />
@@ -135,24 +135,24 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
   return (
     <div className="max-w-4xl mx-auto space-y-4">
       {/* Kind-Header */}
-      <div className="bg-camissio-dunkelblau text-white rounded-2xl p-4 flex items-center justify-between">
-        <div>
+      <div className="bg-camissio-dunkelblau text-white rounded-2xl p-4 flex items-center justify-between gap-3">
+        <div className="min-w-0">
           <div className="text-xs text-white/50 uppercase tracking-wide mb-0.5">Charakterkarte für</div>
-          <h1 className="font-headline text-3xl tracking-wide">{kind.name}</h1>
+          <h1 className="font-headline text-2xl md:text-3xl tracking-wide truncate">{kind.name}</h1>
           {kind.geschlecht !== 'keine' && (
             <span className="text-xs text-camissio-lila">{kind.geschlecht}</span>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={fertigToggle}
-            className={`text-sm px-4 py-2 rounded-xl font-semibold transition-colors ${
+            className={`text-sm px-3 md:px-4 py-2 rounded-xl font-semibold transition-colors ${
               kind.fertig
                 ? 'bg-camissio-summer-gruen text-white'
-                : 'bg-white/10 text-white/70 hover:bg-white/20'
+                : 'bg-white/10 text-white/70 active:bg-white/20'
             }`}
           >
-            {kind.fertig ? '✓ Zur Korrektur' : 'Zur Korrektur'}
+            {kind.fertig ? '✓ Fertig' : 'Zur Korrektur'}
           </button>
         </div>
       </div>

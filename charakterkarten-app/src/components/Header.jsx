@@ -1,6 +1,6 @@
 export default function Header({ camp, session, onAnleitung, onSidebarToggle, sidebarOffen, anzahlKinder, onCampWechseln }) {
   return (
-    <header className="bg-camissio-greige px-3 pt-3 pb-0">
+    <header className="bg-camissio-greige px-3 pt-3 pb-3">
       <div
         className="bg-white rounded-2xl shadow-sm flex items-center justify-between px-3 md:px-5 gap-2"
         style={{ height: '60px' }}
@@ -10,7 +10,7 @@ export default function Header({ camp, session, onAnleitung, onSidebarToggle, si
         <div className="flex items-center gap-2 md:gap-3">
           <button
             onClick={onSidebarToggle}
-            className="p-2 rounded-xl hover:bg-gray-100 transition-colors shrink-0"
+            className="hidden md:flex p-2 rounded-xl hover:bg-gray-100 transition-colors shrink-0"
             aria-label={sidebarOffen ? 'Sidebar schließen' : 'Sidebar öffnen'}
             title="Gruppe ein-/ausblenden"
           >
@@ -34,15 +34,15 @@ export default function Header({ camp, session, onAnleitung, onSidebarToggle, si
             onError={(e) => { e.target.style.display = 'none'; }}
           />
 
-          <div className="hidden sm:block">
+          <div>
             <div
-              className="font-headline text-xl md:text-2xl tracking-wide leading-none"
+              className="font-headline text-base md:text-2xl tracking-wide leading-none"
               style={{ color: camp.farbe }}
             >
               {camp.name}
             </div>
             <div className="text-xs text-camissio-dunkelblau/40 leading-tight font-body tracking-wide">
-              {session ? `${session.campStandort} · Gruppe ${session.gruppe}` : 'Charakterkarten-Tool'}
+              {session ? `${session.campCode || session.campStandort} · Gr. ${session.gruppe}` : 'Charakterkarten-Tool'}
             </div>
           </div>
         </div>
@@ -62,11 +62,14 @@ export default function Header({ camp, session, onAnleitung, onSidebarToggle, si
           <button
             onClick={onCampWechseln}
             className="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-camissio-dunkelblau/70 hover:text-camissio-dunkelblau rounded-xl px-3 py-1.5 text-xs font-semibold transition-colors"
-            title="Camp wechseln"
-            aria-label="Camp wechseln"
+            title="Zur Startseite"
+            aria-label="Zur Startseite"
           >
-            <span>⇄</span>
-            <span className="hidden md:inline">Camp wechseln</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span className="hidden md:inline">Startseite</span>
           </button>
           <button
             onClick={onAnleitung}
@@ -74,7 +77,11 @@ export default function Header({ camp, session, onAnleitung, onSidebarToggle, si
             style={{ backgroundColor: camp.farbe }}
             aria-label="Anleitung öffnen"
           >
-            <span>ℹ️</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="8.5"/>
+              <line x1="12" y1="12" x2="12" y2="16"/>
+            </svg>
             <span className="hidden md:inline">Anleitung</span>
           </button>
         </div>
