@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 
 // POST /api/kinder — neues Kind anlegen
 router.post('/', (req, res) => {
-  const { camp_id, gruppe, name, geschlecht, scores, gewaehlte_eigenschaften, bibelvers, text } = req.body;
+  const { camp_id, gruppe, name, geschlecht, scores, gewaehlte_eigenschaften, bibelvers, text, saison } = req.body;
   if (!camp_id || !gruppe || !name) {
     return res.status(400).json({ error: 'camp_id, gruppe und name erforderlich' });
   }
@@ -27,8 +27,8 @@ router.post('/', (req, res) => {
   const now = new Date().toISOString();
 
   db.prepare(`
-    INSERT INTO kinder (id, camp_id, gruppe, name, geschlecht, scores, gewaehlte_eigenschaften, bibelvers, text, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO kinder (id, camp_id, gruppe, name, geschlecht, scores, gewaehlte_eigenschaften, bibelvers, text, saison, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     id, Number(camp_id), gruppe, name,
     geschlecht || 'keine',
@@ -36,6 +36,7 @@ router.post('/', (req, res) => {
     JSON.stringify(gewaehlte_eigenschaften || []),
     bibelvers || '',
     text || '',
+    saison || 'sommer_2026',
     now, now
   );
 
@@ -100,11 +101,15 @@ function defaultScores() {
   };
 }
 
+function safeJSON(str, fallback) {
+  try { return JSON.parse(str); } catch { return fallback; }
+}
+
 function parseKind(row) {
   return {
     ...row,
-    scores: JSON.parse(row.scores),
-    gewaehltEigenschaften: JSON.parse(row.gewaehlte_eigenschaften),
+    scores: safeJSON(row.scores, {}),
+    gewaehltEigenschaften: safeJSON(row.gewaehlte_eigenschaften, []),
     fertig: row.fertig === 1,
     korrigiert: row.korrigiert === 1,
     text_markup: row.text_markup || '',

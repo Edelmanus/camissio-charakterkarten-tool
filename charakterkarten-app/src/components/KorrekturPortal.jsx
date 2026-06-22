@@ -61,7 +61,10 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
       {/* Header */}
       <header className="bg-camissio-dunkelblau text-white px-6 py-4 flex items-center justify-between">
         <div>
-          <h1 className="font-headline text-2xl tracking-wide">KORREKTUR-PORTAL</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="font-headline text-2xl tracking-wide">KORREKTUR-PORTAL</h1>
+            <span className="px-2 py-0.5 rounded-full bg-white/15 text-white/80 text-xs font-medium">Sommer 2026</span>
+          </div>
           <p className="text-white/50 text-xs mt-0.5">
             {kinder.filter(k => !k.korrigiert).length} offen · {kinder.filter(k => k.korrigiert).length} korrigiert
           </p>

@@ -3,7 +3,7 @@ const db = require('../db/database');
 
 const router = express.Router();
 
-const KORREKTUR_PASSWORT = 'CamundMissi';
+const KORREKTUR_PASSWORT = process.env.KORREKTUR_PASSWORT;
 
 function authMiddleware(req, res, next) {
   const pw = req.headers['x-korrektur-password'];
@@ -23,15 +23,16 @@ router.post('/login', (req, res) => {
   }
 });
 
-// GET /api/korrektur/kinder — alle fertigen Karten (mit Camp-Info)
+// GET /api/korrektur/kinder — alle fertigen Karten (mit Camp-Info), optional ?saison=
 router.get('/kinder', authMiddleware, (req, res) => {
+  const saison = req.query.saison || 'sommer_2026';
   const kinder = db.prepare(`
     SELECT k.*, c.typ as camp_typ, c.standort as camp_standort, c.code as camp_code
     FROM kinder k
     JOIN camps c ON k.camp_id = c.id
-    WHERE k.fertig = 1
+    WHERE k.fertig = 1 AND k.saison = ?
     ORDER BY c.typ, c.standort, k.gruppe, k.name
-  `).all();
+  `).all(saison);
 
   res.json(kinder.map(parseKind));
 });
@@ -58,11 +59,15 @@ router.put('/kinder/:id', authMiddleware, (req, res) => {
   res.json(parseKind(db.prepare('SELECT * FROM kinder WHERE id = ?').get(id)));
 });
 
+function safeJSON(str, fallback) {
+  try { return JSON.parse(str); } catch { return fallback; }
+}
+
 function parseKind(row) {
   return {
     ...row,
-    scores: JSON.parse(row.scores),
-    gewaehltEigenschaften: JSON.parse(row.gewaehlte_eigenschaften),
+    scores: safeJSON(row.scores, {}),
+    gewaehltEigenschaften: safeJSON(row.gewaehlte_eigenschaften, []),
     fertig: row.fertig === 1,
     korrigiert: row.korrigiert === 1,
   };

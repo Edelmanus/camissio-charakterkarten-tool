@@ -6,14 +6,17 @@ const DB_PATH = path.join(__dirname, '..', 'charakterkarten.db');
 const db = new DatabaseSync(DB_PATH);
 
 db.exec(`PRAGMA journal_mode = WAL`);
+db.exec(`PRAGMA busy_timeout = 5000`);
 db.exec(`PRAGMA foreign_keys = ON`);
 
-// Migration: text_markup Spalte falls noch nicht vorhanden
+// Migrationen
 try {
   db.exec(`ALTER TABLE kinder ADD COLUMN text_markup TEXT NOT NULL DEFAULT ''`);
-} catch {
-  // Spalte existiert bereits
-}
+} catch { /* Spalte existiert bereits */ }
+
+try {
+  db.exec(`ALTER TABLE kinder ADD COLUMN saison TEXT NOT NULL DEFAULT 'sommer_2026'`);
+} catch { /* Spalte existiert bereits */ }
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS camps (
@@ -33,6 +36,7 @@ db.exec(`
     gewaehlte_eigenschaften TEXT NOT NULL DEFAULT '[]',
     bibelvers               TEXT NOT NULL DEFAULT '',
     text                    TEXT NOT NULL DEFAULT '',
+    saison                  TEXT NOT NULL DEFAULT 'sommer_2026',
     fertig                  INTEGER NOT NULL DEFAULT 0,
     korrigiert              INTEGER NOT NULL DEFAULT 0,
     korrektur_notiz         TEXT NOT NULL DEFAULT '',
