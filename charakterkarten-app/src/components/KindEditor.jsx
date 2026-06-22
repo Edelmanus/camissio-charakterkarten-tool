@@ -1,9 +1,7 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { useReactToPrint } from 'react-to-print';
+import { useState, useEffect, useMemo } from 'react';
 import RadarChart from './RadarChart';
 import EigenschaftDetail from './EigenschaftDetail';
 import TextEditor from './TextEditor';
-import KarteDruck from './KarteDruck';
 import KorrigiertAnsicht from './KorrigiertAnsicht';
 import { sindZuAehnlich } from '../utils/validierung';
 
@@ -73,8 +71,6 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
   const [aehnlichHinweis, setAehnlichHinweis] = useState(false);
   const [alleBrowseOffen, setAlleBrowseOffen] = useState(false);
   const [browseKatId, setBrowseKatId] = useState(null);
-  const printRef = useRef(null);
-
   // Eigenschaften laden (camp-spezifisch)
   useEffect(() => {
     const file = camp?.eigenschaftenFile || '/data/eigenschaften-youth-camp.json';
@@ -83,11 +79,6 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
       .then(d => setEigenschaften(d.kategorien))
       .catch(console.error);
   }, [camp?.eigenschaftenFile]);
-
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: `Charakterkarte_${kind.name}`,
-  });
 
   // Scores der 7 Kategorien
   const handleScore = (katId, val) => {
@@ -161,7 +152,7 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
                 : 'bg-white/10 text-white/70 hover:bg-white/20'
             }`}
           >
-            {kind.fertig ? '✓ Fertig' : 'Als fertig markieren'}
+            {kind.fertig ? '✓ Zur Korrektur' : 'Zur Korrektur'}
           </button>
         </div>
       </div>
@@ -350,8 +341,8 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
             )}
           </div>
 
-          {/* Bibelvers */}
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
+          {/* Bibelvers — nur beim YOUTH CAMP */}
+          {camp?.id === 'youth-camp' && <div className="bg-white rounded-2xl p-4 shadow-sm">
             <h2 className="font-headline text-lg text-camissio-dunkelblau tracking-wide mb-2">
               BIBELVERS
             </h2>
@@ -378,7 +369,7 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
                 ))}
               </div>
             )}
-          </div>
+          </div>}
 
           {/* Text-Editor */}
           <div className="bg-white rounded-2xl p-4 shadow-sm">
@@ -396,28 +387,18 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
             />
           </div>
 
-          {/* PDF Export */}
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <h2 className="font-headline text-lg text-camissio-dunkelblau tracking-wide mb-2">
-              EXPORTIEREN
-            </h2>
-            <button
-              onClick={handlePrint}
-              className="w-full bg-camissio-dunkelblau text-white rounded-xl py-3 font-semibold text-sm hover:bg-opacity-90 transition-colors flex items-center justify-center gap-2"
-            >
-              <span>🖨️</span>
-              <span>Charakterkarte drucken / als PDF speichern</span>
-            </button>
-            <p className="text-xs text-gray-400 text-center mt-2">
-              Nutze „Als PDF speichern" im Druckdialog deines Browsers.
-            </p>
-          </div>
+          {/* Fertig-Button */}
+          <button
+            onClick={fertigToggle}
+            className={`w-full py-4 rounded-2xl font-headline text-xl tracking-wide transition-colors ${
+              kind.fertig
+                ? 'bg-camissio-summer-gruen text-white'
+                : 'bg-camissio-dunkelblau text-white hover:opacity-90'
+            }`}
+          >
+            {kind.fertig ? '✓ Zur Korrektur eingereicht' : 'Zur Korrektur →'}
+          </button>
         </div>
-      </div>
-
-      {/* Unsichtbare Druckansicht */}
-      <div style={{ display: 'none' }}>
-        <KarteDruck kind={kind} ref={printRef} />
       </div>
 
       {/* Eigenschaft-Detail-Modal */}

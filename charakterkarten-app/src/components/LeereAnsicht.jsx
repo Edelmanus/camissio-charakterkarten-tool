@@ -1,9 +1,17 @@
 import { useState } from 'react';
 
-export default function LeereAnsicht({ onNeuesKind }) {
+function geschlechtAusGruppe(gruppe) {
+  if (!gruppe) return 'keine';
+  const prefix = gruppe[0].toUpperCase();
+  if (prefix === 'J') return 'männlich';
+  if (prefix === 'M') return 'weiblich';
+  return 'keine';
+}
+
+export default function LeereAnsicht({ onNeuesKind, gruppe }) {
   const [formOffen, setFormOffen] = useState(false);
   const [name, setName] = useState('');
-  const [geschlecht, setGeschlecht] = useState('keine');
+  const geschlecht = geschlechtAusGruppe(gruppe);
 
   const submit = (e) => {
     e.preventDefault();
@@ -45,25 +53,6 @@ export default function LeereAnsicht({ onNeuesKind }) {
             className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-camp-akzent text-camissio-dunkelblau mb-3"
             autoFocus
           />
-          <div className="mb-4">
-            <label className="text-xs text-gray-500 block mb-1">Geschlecht (optional)</label>
-            <div className="flex gap-2">
-              {[['männlich', '♂ Männlich'], ['weiblich', '♀ Weiblich'], ['keine', '– Keine Angabe']].map(([val, label]) => (
-                <button
-                  key={val}
-                  type="button"
-                  onClick={() => setGeschlecht(val)}
-                  className={`flex-1 text-xs py-2 rounded-xl border transition-colors ${
-                    geschlecht === val
-                      ? 'bg-camp-akzent text-white border-camp-akzent'
-                      : 'border-gray-200 text-gray-500 hover:border-camp-akzent'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
           <div className="flex gap-2">
             <button
               type="submit"

@@ -74,6 +74,21 @@ function GruppenApp({ session, onAbmelden }) {
     getKinder(session.campId, session.gruppe)
       .then(data => { setKinder(data); setLaden(false); })
       .catch(() => { setFehler('Kinder konnten nicht geladen werden.'); setLaden(false); });
+
+    const poll = setInterval(() => {
+      getKinder(session.campId, session.gruppe)
+        .then(data => setKinder(prev => {
+          // nur aktualisieren wenn sich etwas geändert hat (korrigiert/text_markup)
+          const hatAenderung = data.some(neu => {
+            const alt = prev.find(k => k.id === neu.id);
+            return alt && (alt.korrigiert !== neu.korrigiert || alt.text_markup !== neu.text_markup || alt.korrektur_notiz !== neu.korrektur_notiz);
+          });
+          return hatAenderung ? data : prev;
+        }))
+        .catch(() => {});
+    }, 30000);
+
+    return () => clearInterval(poll);
   }, [session.campId, session.gruppe]);
 
   const aktiveKind = kinder.find(k => k.id === aktivesKindId) || null;
@@ -185,6 +200,7 @@ function GruppenApp({ session, onAbmelden }) {
               kinder={kinder}
               aktivesKindId={aktivesKindId}
               camp={camp}
+              gruppe={session.gruppe}
               onKindAktivieren={kindAktivieren}
               onNeuesKind={neuesKindAnlegen}
               onKindLoeschen={kindLoeschen}
@@ -201,7 +217,7 @@ function GruppenApp({ session, onAbmelden }) {
               onFertigToggle={(fertig) => kindFertigToggle(aktiveKind.id, fertig)}
             />
           ) : (
-            <LeereAnsicht onNeuesKind={neuesKindAnlegen} />
+            <LeereAnsicht onNeuesKind={neuesKindAnlegen} gruppe={session.gruppe} />
           )}
         </main>
       </div>

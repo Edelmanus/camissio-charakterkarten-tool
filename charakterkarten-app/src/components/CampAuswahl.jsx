@@ -6,7 +6,7 @@ const GRUPPEN_TYPEN = [
   { prefix: 'J', label: 'Jungen' },
   { prefix: 'M', label: 'Mädchen' },
 ];
-const GRUPPEN_NUMMERN = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const GRUPPEN_NUMMERN = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
 export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
   const [schritt, setSchritt] = useState(1); // 1=Typ, 2=Standort, 3=Gruppe
@@ -27,6 +27,7 @@ export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
 
   useEffect(() => {
     if (!campTyp) return;
+    setLadeFehler(null);
     getCamps(campTyp)
       .then(setCamps)
       .catch(() => setLadeFehler('Camps konnten nicht geladen werden.'));
@@ -137,7 +138,7 @@ export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
               ← Zurück
             </button>
             <p className="text-camissio-dunkelblau/70 text-center font-body text-base mb-5">
-              Welcher Standort?
+              {campTyp === 'CAMP2GO' ? 'Welcher Standort?' : 'Welches Camp?'}
             </p>
             {ladeFehler && <p className="text-red-500 text-sm text-center mb-4">{ladeFehler}</p>}
             <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden max-h-64 overflow-y-auto shadow-sm">

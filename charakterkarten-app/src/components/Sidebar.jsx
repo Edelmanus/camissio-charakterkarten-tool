@@ -1,13 +1,12 @@
 import { useState } from 'react';
 
-function NeuesKindForm({ onAnlegen, onAbbrechen }) {
+function NeuesKindForm({ onAnlegen, onAbbrechen, geschlechtVorgabe }) {
   const [name, setName] = useState('');
-  const [geschlecht, setGeschlecht] = useState('keine');
 
   const submit = (e) => {
     e.preventDefault();
     if (name.trim()) {
-      onAnlegen(name.trim(), geschlecht);
+      onAnlegen(name.trim(), geschlechtVorgabe);
       setName('');
     }
   };
@@ -23,25 +22,6 @@ function NeuesKindForm({ onAnlegen, onAbbrechen }) {
         aria-label="Name des Kindes"
         autoFocus
       />
-      <div className="mt-2">
-        <label className="text-xs text-gray-500 block mb-1">Geschlecht (optional)</label>
-        <div className="flex gap-2">
-          {[['männlich', '♂'], ['weiblich', '♀'], ['keine', '–']].map(([val, label]) => (
-            <button
-              key={val}
-              type="button"
-              onClick={() => setGeschlecht(val)}
-              className={`flex-1 text-xs py-1 rounded-lg border transition-colors ${
-                geschlecht === val
-                  ? 'bg-camp-akzent text-white border-camp-akzent'
-                  : 'border-gray-200 text-gray-500 hover:border-camp-akzent'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
       <div className="flex gap-2 mt-3">
         <button
           type="submit"
@@ -119,8 +99,17 @@ function Sektion({ titel, farbe, kinder, aktivesKindId, onAktivieren, onLoeschen
   );
 }
 
-export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeuesKind, onKindLoeschen }) {
+function geschlechtAusGruppe(gruppe) {
+  if (!gruppe) return 'keine';
+  const prefix = gruppe[0].toUpperCase();
+  if (prefix === 'J') return 'männlich';
+  if (prefix === 'M') return 'weiblich';
+  return 'keine';
+}
+
+export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeuesKind, onKindLoeschen, gruppe }) {
   const [formOffen, setFormOffen] = useState(false);
+  const geschlechtVorgabe = geschlechtAusGruppe(gruppe);
 
   const handleAnlegen = (name, geschlecht) => {
     onNeuesKind(name, geschlecht);
@@ -171,7 +160,7 @@ export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeu
         />
 
         {formOffen && (
-          <NeuesKindForm onAnlegen={handleAnlegen} onAbbrechen={() => setFormOffen(false)} />
+          <NeuesKindForm onAnlegen={handleAnlegen} onAbbrechen={() => setFormOffen(false)} geschlechtVorgabe={geschlechtVorgabe} />
         )}
       </div>
 
