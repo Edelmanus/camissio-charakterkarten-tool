@@ -25,6 +25,7 @@ const KATEGORIE_FARBEN = {
   vorbild: '#a1a5dd',
   anbeter: '#f5e563',
   // Zusatz-Kategorien (kein Slider, aber für Eigenschafts-Browser)
+  allerechteste: '#e8a838',
   lernend: '#1c4554',
   gestalter: '#de69a8',
   ueberwinder: '#fa5c33',
@@ -43,7 +44,7 @@ function ScoreSlider({ katId, name, value, onChange }) {
       <div className="flex-1 flex items-center gap-2 min-w-0">
         <input
           type="range"
-          min="1"
+          min="0"
           max="5"
           value={value}
           onChange={e => onChange(parseInt(e.target.value))}
@@ -62,7 +63,24 @@ function ScoreSlider({ katId, name, value, onChange }) {
   );
 }
 
+function AltersgruppePill({ altersgruppe, config }) {
+  if (!config || !altersgruppe) return null;
+  const label = config[altersgruppe];
+  if (!label) return null;
+  const styles = {
+    jung: 'bg-green-100 text-green-700',
+    alt: 'bg-blue-100 text-blue-700',
+    alle: 'bg-gray-100 text-gray-500',
+  };
+  return (
+    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-none ${styles[altersgruppe] || styles.alle}`}>
+      {label}
+    </span>
+  );
+}
+
 export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
+  const pillConfig = camp?.altersgruppePillConfig || null;
   if (kind.korrigiert) {
     return <KorrigiertAnsicht kind={kind} />;
   }
@@ -71,6 +89,7 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
   const [aehnlichHinweis, setAehnlichHinweis] = useState(false);
   const [alleBrowseOffen, setAlleBrowseOffen] = useState(false);
   const [browseKatId, setBrowseKatId] = useState(null);
+  const [eigeneEigenschaft, setEigeneEigenschaft] = useState('');
   // Eigenschaften laden (camp-spezifisch)
   useEffect(() => {
     const file = camp?.eigenschaftenFile || '/data/eigenschaften-youth-camp.json';
@@ -88,7 +107,9 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
   // Top-3 Kategorien nach Score → Vorschläge berechnen
   const vorschlaege = useMemo(() => {
     if (!eigenschaften) return [];
+    if (Object.values(kind.scores).every(s => !s || s === 0)) return [];
     const sorted = Object.entries(kind.scores)
+      .filter(([, v]) => v > 0)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
       .map(([id]) => id);
@@ -166,15 +187,19 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
               WESENSZÜGE EINSCHÄTZEN
             </h2>
             <div className="space-y-3">
-              {Object.entries(KATEGORIE_NAMEN).map(([katId, name]) => (
-                <ScoreSlider
-                  key={katId}
-                  katId={katId}
-                  name={name}
-                  value={kind.scores[katId] || 3}
-                  onChange={(val) => handleScore(katId, val)}
-                />
-              ))}
+              {(eigenschaften || Object.entries(KATEGORIE_NAMEN).map(([id, name]) => ({ id, name }))).map((kat) => {
+                const katId = kat.id ?? kat[0];
+                const name = kat.name ?? kat[1];
+                return (
+                  <ScoreSlider
+                    key={katId}
+                    katId={katId}
+                    name={name}
+                    value={kind.scores[katId] ?? 0}
+                    onChange={(val) => handleScore(katId, val)}
+                  />
+                );
+              })}
             </div>
           </div>
 
@@ -199,7 +224,11 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
             </p>
 
             {vorschlaege.length === 0 ? (
-              <p className="text-sm text-gray-400">Lade Eigenschaften…</p>
+              <p className="text-sm text-gray-400">
+                {eigenschaften
+                  ? 'Setze die Slider links, um passende Vorschläge zu erhalten.'
+                  : 'Lade Eigenschaften…'}
+              </p>
             ) : (
               <div className="grid grid-cols-2 gap-2">
                 {vorschlaege.map((eig) => {
@@ -214,13 +243,14 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
                           : 'border-gray-100 bg-gray-50 hover:border-camissio-lila/50 text-camissio-dunkelblau hover:bg-camissio-lila/5'
                       }`}
                     >
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 flex-wrap">
                         <span
                           className="w-2 h-2 rounded-full shrink-0"
                           style={{ backgroundColor: eig.katFarbe }}
                         />
-                        {eig.name}
-                        {istGewaehlt && <span className="ml-auto text-camissio-lila">✓</span>}
+                        <span className="flex-1">{eig.name}</span>
+                        <AltersgruppePill altersgruppe={eig.altersgruppe} config={pillConfig} />
+                        {istGewaehlt && <span className="text-camissio-lila">✓</span>}
                       </div>
                     </button>
                   );
@@ -285,6 +315,7 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
                             >
                               <span className="font-semibold text-camissio-dunkelblau">{eig.name}</span>
                               {istGewaehlt && <span className="ml-1 text-camissio-lila">✓</span>}
+                              <AltersgruppePill altersgruppe={eig.altersgruppe} config={pillConfig} />
                             </button>
                           );
                         })}
@@ -295,6 +326,41 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
               )}
             </div>
           </div>
+
+          {/* Eigene Eigenschaft hinzufügen */}
+          {kind.gewaehltEigenschaften.length < 2 && (
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <h2 className="font-headline text-lg text-camissio-dunkelblau tracking-wide mb-3">
+                EIGENE EIGENSCHAFT
+              </h2>
+              <p className="text-xs text-gray-400 mb-2">Nicht in der Liste? Trag hier eine eigene ein.</p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={eigeneEigenschaft}
+                  onChange={e => setEigeneEigenschaft(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && eigeneEigenschaft.trim()) {
+                      eigenschaftHinzufuegen({ name: eigeneEigenschaft.trim(), katFarbe: '#9ca3af' });
+                      setEigeneEigenschaft('');
+                    }
+                  }}
+                  placeholder="z.B. Humorvoll"
+                  className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-camissio-dunkelblau focus:outline-none focus:ring-2 focus:ring-camissio-lila"
+                />
+                <button
+                  onClick={() => {
+                    if (!eigeneEigenschaft.trim()) return;
+                    eigenschaftHinzufuegen({ name: eigeneEigenschaft.trim(), katFarbe: '#9ca3af' });
+                    setEigeneEigenschaft('');
+                  }}
+                  className="px-4 py-2 bg-camissio-lila text-white rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Gewählte Eigenschaften */}
           <div className="bg-white rounded-2xl p-4 shadow-sm">
@@ -317,7 +383,10 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
                     className="flex items-center justify-between bg-camissio-lila/10 border border-camissio-lila/30 rounded-xl px-3 py-2.5"
                   >
                     <div>
-                      <div className="text-sm font-semibold text-camissio-dunkelblau">{eig.name}</div>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-sm font-semibold text-camissio-dunkelblau">{eig.name}</span>
+                        <AltersgruppePill altersgruppe={eig.altersgruppe} config={pillConfig} />
+                      </div>
                       {eig.bibelvers && (
                         <div className="text-xs text-camissio-petrol mt-0.5">📖 {eig.bibelvers}</div>
                       )}

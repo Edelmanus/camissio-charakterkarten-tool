@@ -24,6 +24,7 @@ export const CAMPS = [
     logo: '/assets/camp2go-logo.png',
     eigenschaftenFile: '/data/eigenschaften-camp2go.json',
     storageKey: 'camissio_charakterkarten_camp2go',
+    altersgruppePillConfig: { jung: '6–9 J.', alt: '10–12 J.', alle: 'Alle' },
   },
   {
     id: 'quietschfidel',
@@ -37,6 +38,7 @@ export const CAMPS = [
     logo: '/assets/camissio-logo.png',
     eigenschaftenFile: '/data/eigenschaften-quietschfidel.json',
     storageKey: 'camissio_charakterkarten_quietschfidel',
+    altersgruppePillConfig: { jung: 'Jüngere', alt: 'Ältere', alle: 'Alle' },
   },
 ];
 

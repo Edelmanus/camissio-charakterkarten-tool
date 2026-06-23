@@ -95,10 +95,7 @@ router.delete('/:id', (req, res) => {
 });
 
 function defaultScores() {
-  return {
-    beziehungsstark: 3, anpacker: 3, unaufhaltsam: 3,
-    verwurzelt: 3, gewissenhaft: 3, vorbild: 3, anbeter: 3,
-  };
+  return {};
 }
 
 function safeJSON(str, fallback) {

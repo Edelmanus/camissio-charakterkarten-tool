@@ -76,7 +76,7 @@ export function zaehlesSaetze(text) {
 
 export function wortZaehlerStatus(anzahl) {
   if (anzahl < 40) return 'grau';
-  if (anzahl <= 120) return 'gruen';
+  if (anzahl <= 70) return 'gruen';
   return 'orange';
 }
 

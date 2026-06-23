@@ -7,8 +7,7 @@ import {
   Tooltip,
 } from 'recharts';
 
-// Kurze Labels damit der Chart übersichtlich bleibt
-const KATEGORIEN_KURZ = {
+const ALLE_KATEGORIEN_KURZ = {
   beziehungsstark: 'Beziehg.',
   anpacker: 'Anpacker',
   unaufhaltsam: 'Unaufh.',
@@ -16,9 +15,12 @@ const KATEGORIEN_KURZ = {
   gewissenhaft: 'Gewiss.',
   vorbild: 'Vorbild',
   anbeter: 'Anbeter',
+  allerechteste: 'Recht.',
+  lernend: 'Lernend',
+  gestalter: 'Gestalter',
+  ueberwinder: 'Überwind.',
 };
 
-// Custom Tick für bessere Darstellung
 function CustomTick({ x, y, payload, textAnchor }) {
   return (
     <text
@@ -36,9 +38,24 @@ function CustomTick({ x, y, payload, textAnchor }) {
 }
 
 export default function RadarChart({ scores }) {
-  const data = Object.entries(KATEGORIEN_KURZ).map(([key, label]) => ({
-    subject: label,
-    Wert: scores[key] || 3,
+  // Kategorien mit Score > 0, absteigend sortiert
+  const mitScore = Object.entries(scores)
+    .filter(([, v]) => v > 0)
+    .sort((a, b) => b[1] - a[1]);
+
+  // Kategorien ohne Score
+  const ohneScore = Object.keys(ALLE_KATEGORIEN_KURZ)
+    .filter(k => !scores[k] || scores[k] === 0);
+
+  // Immer genau 7 Achsen: erst die mit Score, dann auffüllen
+  const selected = [
+    ...mitScore.map(([k]) => k),
+    ...ohneScore,
+  ].slice(0, 7);
+
+  const data = selected.map(key => ({
+    subject: ALLE_KATEGORIEN_KURZ[key] || key,
+    Wert: scores[key] || 0,
     fullMark: 5,
   }));
 
