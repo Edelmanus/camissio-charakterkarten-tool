@@ -23,18 +23,39 @@ router.post('/login', (req, res) => {
   }
 });
 
-// GET /api/korrektur/kinder — alle fertigen Karten (mit Camp-Info), optional ?saison=
+// GET /api/korrektur/stats — Zählwerte pro Standort (leichtgewichtig, für Sidebar)
+router.get('/stats', authMiddleware, (req, res) => {
+  const saison = req.query.saison || 'sommer_2026';
+  const stats = db.prepare(`
+    SELECT c.typ as camp_typ, c.standort as camp_standort, c.code as camp_code,
+           COUNT(k.id) as gesamt, SUM(k.korrigiert) as korrigiert
+    FROM kinder k
+    JOIN camps c ON k.camp_id = c.id
+    WHERE k.fertig = 1 AND k.saison = ?
+    GROUP BY c.id
+  `).all(saison);
+  res.json(stats.map(s => ({ ...s, korrigiert: s.korrigiert ?? 0 })));
+});
+
+// GET /api/korrektur/kinder — fertige Karten, gefiltert nach typ+standort
 router.get('/kinder', authMiddleware, (req, res) => {
   const saison = req.query.saison || 'sommer_2026';
-  const kinder = db.prepare(`
+  const { typ, standort } = req.query;
+
+  let query = `
     SELECT k.*, c.typ as camp_typ, c.standort as camp_standort, c.code as camp_code
     FROM kinder k
     JOIN camps c ON k.camp_id = c.id
     WHERE k.fertig = 1 AND k.saison = ?
-    ORDER BY c.typ, c.standort, k.gruppe, k.name
-  `).all(saison);
+  `;
+  const params = [saison];
 
-  res.json(kinder.map(parseKind));
+  if (typ) { query += ' AND c.typ = ?'; params.push(typ); }
+  if (standort) { query += ' AND c.standort = ?'; params.push(standort); }
+
+  query += ' ORDER BY k.gruppe, k.name';
+
+  res.json(db.prepare(query).all(...params).map(parseKind));
 });
 
 // PUT /api/korrektur/kinder/:id — Korrektur speichern

@@ -1,38 +1,68 @@
 import { useState, useEffect } from 'react';
-import { getKorrekturKinder, updateKorrektur } from '../utils/api';
+import { getKorrekturStats, getKorrekturKinder, updateKorrektur } from '../utils/api';
 import MarkupEditor from './MarkupEditor';
 import { CAMPPLAN, getISOWeek, formatDatum, eintragLabel } from '../config/camps';
 
 export default function KorrekturPortal({ passwort, onAbmelden }) {
-  const [kinder, setKinder] = useState([]);
-  const [laden, setLaden] = useState(true);
+  const [stats, setStats] = useState([]); // [{ camp_typ, camp_standort, camp_code, gesamt, korrigiert }]
+  const [kinderCache, setKinderCache] = useState({}); // "typ|standort" → [kinder]
+  const [statsLaden, setStatsLaden] = useState(true);
+  const [stadtLaden, setStadtLaden] = useState(false);
   const [fehler, setFehler] = useState(null);
   const [aufgeklappt, setAufgeklappt] = useState(new Set());
   const [ausgewaehlt, setAusgewaehlt] = useState(null); // { typ, standort, code }
-  const [aktiveGruppe, setAktiveGruppe] = useState(null); // Gruppenname z.B. "J1"
+  const [aktiveGruppe, setAktiveGruppe] = useState(null);
   const [aktivesKindId, setAktivesKindId] = useState(null);
   const [filter, setFilter] = useState('alle');
 
   const aktuelleKW = getISOWeek(new Date());
 
-  useEffect(() => { ladeDaten(); }, []);
+  useEffect(() => { ladeStats(); }, []);
 
   useEffect(() => {
-    if (laden) return;
+    if (statsLaden) return;
     const aktiv = CAMPPLAN.find(w => w.kw === aktuelleKW)
       || CAMPPLAN.find(w => w.kw > aktuelleKW);
     if (aktiv) setAufgeklappt(new Set([aktiv.kw]));
-  }, [laden]);
+  }, [statsLaden]);
 
-  async function ladeDaten() {
-    setLaden(true);
+  async function ladeStats() {
+    setStatsLaden(true);
     try {
-      const data = await getKorrekturKinder(passwort);
-      setKinder(data);
+      const data = await getKorrekturStats(passwort);
+      setStats(data);
+    } catch {
+      setFehler('Statistiken konnten nicht geladen werden.');
+    } finally {
+      setStatsLaden(false);
+    }
+  }
+
+  function cacheKey(typ, standort) {
+    return `${typ}|${standort}`;
+  }
+
+  function kinderFuerAuswahl(typ, standort) {
+    return kinderCache[cacheKey(typ, standort)] || [];
+  }
+
+  async function handleStadtWaehlen(e) {
+    setAusgewaehlt(e);
+    setAktiveGruppe(null);
+    setAktivesKindId(null);
+    setFilter('alle');
+
+    const key = cacheKey(e.typ, e.standort);
+    if (kinderCache[key]) return; // bereits gecacht
+
+    setStadtLaden(true);
+    try {
+      const data = await getKorrekturKinder(passwort, e.typ, e.standort);
+      setKinderCache(prev => ({ ...prev, [key]: data }));
     } catch {
       setFehler('Karten konnten nicht geladen werden.');
     } finally {
-      setLaden(false);
+      setStadtLaden(false);
     }
   }
 
@@ -44,20 +74,32 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
     });
   }
 
-  function kindFuerEintrag(typ, standort) {
-    return kinder.filter(k => k.camp_typ === typ && k.camp_standort === standort);
-  }
-
   function progress(typ, standort) {
-    const gruppe = kindFuerEintrag(typ, standort);
-    return { gesamt: gruppe.length, korrigiert: gruppe.filter(k => k.korrigiert).length };
+    const s = stats.find(s => s.camp_typ === typ && s.camp_standort === standort);
+    return s ? { gesamt: s.gesamt, korrigiert: s.korrigiert } : { gesamt: 0, korrigiert: 0 };
   }
 
-  const aktivesKind = kinder.find(k => k.id === aktivesKindId) || null;
-  const kinderFuerAuswahl = ausgewaehlt ? kindFuerEintrag(ausgewaehlt.typ, ausgewaehlt.standort) : [];
+  function updateKindInCache(typ, standort, aktualisiert) {
+    const key = cacheKey(typ, standort);
+    setKinderCache(prev => ({
+      ...prev,
+      [key]: (prev[key] || []).map(k => k.id === aktualisiert.id ? aktualisiert : k),
+    }));
+  }
+
+  function updateStats(typ, standort, vorher, nachher) {
+    setStats(prev => prev.map(s => {
+      if (s.camp_typ !== typ || s.camp_standort !== standort) return s;
+      const delta = (nachher.korrigiert ? 1 : 0) - (vorher.korrigiert ? 1 : 0);
+      return { ...s, korrigiert: s.korrigiert + delta };
+    }));
+  }
+
+  const aktuelleKinder = ausgewaehlt ? kinderFuerAuswahl(ausgewaehlt.typ, ausgewaehlt.standort) : [];
+  const aktivesKind = aktuelleKinder.find(k => k.id === aktivesKindId) || null;
 
   const kinderFuerGruppe = aktiveGruppe
-    ? kinderFuerAuswahl.filter(k => k.gruppe === aktiveGruppe)
+    ? aktuelleKinder.filter(k => k.gruppe === aktiveGruppe)
     : [];
 
   const gefilterteKinder = kinderFuerGruppe.filter(k => {
@@ -66,13 +108,14 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
     return true;
   });
 
-  const offen = kinder.filter(k => !k.korrigiert).length;
-  const korrigiert = kinder.filter(k => k.korrigiert).length;
+  const gesamtOffen = stats.reduce((sum, s) => sum + (s.gesamt - s.korrigiert), 0);
+  const gesamtKorrigiert = stats.reduce((sum, s) => sum + s.korrigiert, 0);
 
   async function handleKorrigiert(kind) {
     try {
       const aktualisiert = await updateKorrektur(kind.id, { korrigiert: !kind.korrigiert }, passwort);
-      setKinder(prev => prev.map(k => k.id === aktualisiert.id ? aktualisiert : k));
+      updateKindInCache(ausgewaehlt.typ, ausgewaehlt.standort, aktualisiert);
+      updateStats(ausgewaehlt.typ, ausgewaehlt.standort, kind, aktualisiert);
     } catch {
       alert('Fehler beim Speichern.');
     }
@@ -85,18 +128,12 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
         { text, text_markup: textMarkup, korrektur_notiz: notiz, korrigiert: true },
         passwort
       );
-      setKinder(prev => prev.map(k => k.id === aktualisiert.id ? aktualisiert : k));
+      updateKindInCache(ausgewaehlt.typ, ausgewaehlt.standort, aktualisiert);
+      updateStats(ausgewaehlt.typ, ausgewaehlt.standort, kind, aktualisiert);
       setAktivesKindId(null);
     } catch {
       alert('Fehler beim Speichern.');
     }
-  }
-
-  function handleStadtWaehlen(e) {
-    setAusgewaehlt(e);
-    setAktiveGruppe(null);
-    setAktivesKindId(null);
-    setFilter('alle');
   }
 
   return (
@@ -108,7 +145,7 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
             <span className="px-2 py-0.5 rounded-full bg-white/15 text-white/80 text-xs font-medium">Sommer 2026</span>
           </div>
           <p className="text-white/50 text-xs mt-0.5">
-            {laden ? 'Lädt…' : `${offen} offen · ${korrigiert} korrigiert`}
+            {statsLaden ? 'Lädt…' : `${gesamtOffen} offen · ${gesamtKorrigiert} korrigiert`}
           </p>
         </div>
         <button onClick={onAbmelden} className="text-white/60 hover:text-white text-sm transition-colors">
@@ -120,6 +157,7 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
         {/* Sidebar: Wochenplan */}
         <aside className="w-72 bg-white border-r border-gray-100 flex flex-col overflow-y-auto shrink-0">
           {fehler && <p className="text-xs text-red-500 text-center py-6 px-4">{fehler}</p>}
+          {statsLaden && <p className="text-xs text-gray-400 text-center py-6">Lädt…</p>}
 
           {CAMPPLAN.map(woche => {
             const today = new Date();
@@ -204,11 +242,13 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
           )}
 
           {ausgewaehlt && !aktiveGruppe && (
-            <GruppenUebersicht
-              eintrag={ausgewaehlt}
-              kinder={kinderFuerAuswahl}
-              onGruppeWaehlen={g => { setAktiveGruppe(g); setFilter('alle'); }}
-            />
+            stadtLaden
+              ? <div className="flex-1 flex items-center justify-center"><p className="text-gray-400 text-sm">Karten werden geladen…</p></div>
+              : <GruppenUebersicht
+                  eintrag={ausgewaehlt}
+                  kinder={aktuelleKinder}
+                  onGruppeWaehlen={g => { setAktiveGruppe(g); setFilter('alle'); }}
+                />
           )}
 
           {ausgewaehlt && aktiveGruppe && !aktivesKind && (

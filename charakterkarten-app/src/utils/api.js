@@ -68,8 +68,17 @@ export async function korrekturLogin(passwort) {
   return true;
 }
 
-export function getKorrekturKinder(passwort) {
-  return fetch(`${BASE}/korrektur/kinder`, {
+export function getKorrekturStats(passwort) {
+  return fetch(`${BASE}/korrektur/stats`, {
+    headers: { 'x-korrektur-password': passwort },
+  }).then(r => r.ok ? r.json() : Promise.reject(new Error('Nicht autorisiert')));
+}
+
+export function getKorrekturKinder(passwort, typ, standort) {
+  const params = new URLSearchParams();
+  if (typ) params.set('typ', typ);
+  if (standort) params.set('standort', standort);
+  return fetch(`${BASE}/korrektur/kinder?${params}`, {
     headers: { 'x-korrektur-password': passwort },
   }).then(r => r.ok ? r.json() : Promise.reject(new Error('Nicht autorisiert')));
 }
