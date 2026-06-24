@@ -1,16 +1,12 @@
-import { useRef, useEffect, useState } from 'react';
-
-const FARBEN = [
-  { label: 'Gelb', value: '#fef08a', textClass: 'text-yellow-700' },
-  { label: 'Grün', value: '#bbf7d0', textClass: 'text-green-700' },
-  { label: 'Rot', value: '#fecaca', textClass: 'text-red-700' },
-];
+import { useRef, useEffect, useState, useCallback } from 'react';
 
 export default function MarkupEditor({ initialHtml, plainText, onChange }) {
   const editorRef = useRef(null);
   const savedRangeRef = useRef(null);
+  const popoverRef = useRef(null);
   const [kommentarOffen, setKommentarOffen] = useState(false);
   const [kommentarText, setKommentarText] = useState('');
+  const [aktiverKommentar, setAktiverKommentar] = useState(null); // { text, top, left }
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -18,22 +14,39 @@ export default function MarkupEditor({ initialHtml, plainText, onChange }) {
     editorRef.current.innerHTML = startHtml;
   }, []);
 
+  // Popover schließen bei Klick außerhalb
+  useEffect(() => {
+    if (!aktiverKommentar) return;
+    function handleOutside(e) {
+      if (popoverRef.current && !popoverRef.current.contains(e.target)) {
+        setAktiverKommentar(null);
+      }
+    }
+    function handleEscape(e) {
+      if (e.key === 'Escape') setAktiverKommentar(null);
+    }
+    document.addEventListener('mousedown', handleOutside);
+    document.addEventListener('touchstart', handleOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      document.removeEventListener('touchstart', handleOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [aktiverKommentar]);
+
   function apply(fn) {
     editorRef.current?.focus();
     fn();
     onChange(editorRef.current?.innerHTML || '');
   }
 
-  function markieren(farbe) {
-    apply(() => document.execCommand('hiliteColor', false, farbe));
-  }
-
   function durchstreichen() {
     apply(() => document.execCommand('strikeThrough'));
   }
 
-  function markierungEntfernen() {
-    apply(() => document.execCommand('removeFormat'));
+  function rueckgaengig() {
+    apply(() => document.execCommand('undo'));
   }
 
   function handleInput() {
@@ -44,7 +57,6 @@ export default function MarkupEditor({ initialHtml, plainText, onChange }) {
     e.preventDefault();
     const sel = window.getSelection();
     if (!sel || sel.isCollapsed) return;
-    // Selektion speichern bevor das Input-Feld den Fokus übernimmt
     savedRangeRef.current = sel.getRangeAt(0).cloneRange();
     setKommentarText('');
     setKommentarOffen(true);
@@ -77,23 +89,35 @@ export default function MarkupEditor({ initialHtml, plainText, onChange }) {
     savedRangeRef.current = null;
   }
 
+  function handleEditorClick(e) {
+    const span = e.target.closest('.inline-kommentar');
+    if (!span) return;
+
+    // Toggle: gleiches Span nochmal getippt → schließen
+    if (aktiverKommentar?.spanEl === span) {
+      setAktiverKommentar(null);
+      return;
+    }
+
+    const rect = span.getBoundingClientRect();
+    const popoverWidth = 280;
+    const popoverEstimatedHeight = 60;
+
+    let left = rect.left + rect.width / 2 - popoverWidth / 2;
+    // Viewport-Clipping horizontal
+    left = Math.max(8, Math.min(left, window.innerWidth - popoverWidth - 8));
+
+    let top = rect.top - popoverEstimatedHeight - 10;
+    // Kein Platz oben → unterhalb anzeigen
+    if (top < 8) top = rect.bottom + 8;
+
+    setAktiverKommentar({ text: span.dataset.comment, top, left, spanEl: span });
+  }
+
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden">
       {/* Toolbar */}
-      <div className="flex items-center gap-1 px-3 py-2 bg-gray-50 border-b border-gray-100 flex-wrap">
-        <span className="text-xs text-gray-400 mr-1">Markieren:</span>
-        {FARBEN.map(f => (
-          <button
-            key={f.value}
-            onMouseDown={e => { e.preventDefault(); markieren(f.value); }}
-            className="px-2.5 py-1 rounded-lg text-xs font-semibold border border-gray-200 hover:shadow-sm transition-shadow"
-            style={{ backgroundColor: f.value }}
-            title={`${f.label} markieren`}
-          >
-            {f.label}
-          </button>
-        ))}
-        <div className="w-px h-4 bg-gray-200 mx-1" />
+      <div className="flex items-center gap-1 px-3 py-2 bg-gray-50 border-b border-gray-100">
         <button
           onMouseDown={e => { e.preventDefault(); durchstreichen(); }}
           className="px-2.5 py-1 rounded-lg text-xs font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
@@ -111,11 +135,11 @@ export default function MarkupEditor({ initialHtml, plainText, onChange }) {
         </button>
         <div className="w-px h-4 bg-gray-200 mx-1" />
         <button
-          onMouseDown={e => { e.preventDefault(); markierungEntfernen(); }}
-          className="px-2.5 py-1 rounded-lg text-xs font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-gray-500"
-          title="Formatierung entfernen"
+          onMouseDown={e => { e.preventDefault(); rueckgaengig(); }}
+          className="px-2.5 py-1 rounded-lg text-xs font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-gray-600"
+          title="Rückgängig"
         >
-          ✕ Formatierung
+          ↩ Rückgängig
         </button>
       </div>
 
@@ -143,7 +167,7 @@ export default function MarkupEditor({ initialHtml, plainText, onChange }) {
             onClick={kommentarAbbrechen}
             className="px-2 py-1 rounded-lg text-xs text-gray-400 hover:text-gray-600"
           >
-            Abbrechen
+            ✕
           </button>
         </div>
       )}
@@ -154,9 +178,31 @@ export default function MarkupEditor({ initialHtml, plainText, onChange }) {
         contentEditable
         suppressContentEditableWarning
         onInput={handleInput}
+        onClick={handleEditorClick}
         className="px-4 py-3 text-sm text-camissio-dunkelblau leading-relaxed min-h-[180px] focus:outline-none"
         style={{ whiteSpace: 'pre-wrap' }}
       />
+
+      {/* Kommentar-Popover */}
+      {aktiverKommentar && (
+        <div
+          ref={popoverRef}
+          style={{ position: 'fixed', top: aktiverKommentar.top, left: aktiverKommentar.left, width: 280 }}
+          className="z-50 bg-camissio-dunkelblau text-white rounded-xl px-4 py-3 shadow-xl"
+        >
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-xs leading-relaxed">{aktiverKommentar.text}</p>
+            <button
+              onClick={() => setAktiverKommentar(null)}
+              className="text-white/60 hover:text-white text-sm leading-none shrink-0 mt-0.5"
+            >
+              ×
+            </button>
+          </div>
+          {/* Pfeil nach unten */}
+          <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-camissio-dunkelblau" />
+        </div>
+      )}
     </div>
   );
 }
