@@ -154,8 +154,8 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar: Wochenplan */}
-        <aside className="w-72 bg-white border-r border-gray-100 flex flex-col overflow-y-auto shrink-0">
+        {/* Sidebar: Wochenplan — auf Mobile nur wenn keine Stadt gewählt */}
+        <aside className={`bg-white border-r border-gray-100 flex flex-col overflow-y-auto shrink-0 ${ausgewaehlt ? 'hidden md:flex md:w-72' : 'w-full md:w-72'}`}>
           {fehler && <p className="text-xs text-red-500 text-center py-6 px-4">{fehler}</p>}
           {statsLaden && <p className="text-xs text-gray-400 text-center py-6">Lädt…</p>}
 
@@ -230,8 +230,8 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
           })}
         </aside>
 
-        {/* Hauptbereich */}
-        <main className="flex-1 overflow-hidden flex flex-col">
+        {/* Hauptbereich — auf Mobile nur wenn Stadt gewählt */}
+        <main className={`flex-1 overflow-hidden flex flex-col ${!ausgewaehlt ? 'hidden md:flex' : ''}`}>
           {!ausgewaehlt && (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
@@ -248,6 +248,7 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
                   eintrag={ausgewaehlt}
                   kinder={aktuelleKinder}
                   onGruppeWaehlen={g => { setAktiveGruppe(g); setFilter('alle'); }}
+                  onZurueckZuStadt={() => setAusgewaehlt(null)}
                 />
           )}
 
@@ -278,7 +279,7 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
   );
 }
 
-function GruppenUebersicht({ eintrag, kinder, onGruppeWaehlen }) {
+function GruppenUebersicht({ eintrag, kinder, onGruppeWaehlen, onZurueckZuStadt }) {
   const gruppen = gruppenSortiert(kinder);
   const offen = kinder.filter(k => !k.korrigiert).length;
   const korrigiert = kinder.filter(k => k.korrigiert).length;
@@ -286,6 +287,9 @@ function GruppenUebersicht({ eintrag, kinder, onGruppeWaehlen }) {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="bg-white border-b border-gray-100 px-6 py-4">
+        <button onClick={onZurueckZuStadt} className="md:hidden text-xs text-camissio-petrol hover:underline mb-2 flex items-center gap-1">
+          ‹ Stadtauswahl
+        </button>
         <div className="flex items-start justify-between">
           <div>
             <h2 className="font-headline text-2xl text-camissio-dunkelblau tracking-wide">
