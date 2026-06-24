@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { pruefAdjektive, pruefVergangenheit, pruefNicht, zaehleWorte, wortZaehlerStatus } from '../utils/validierung';
 
 const FORMULIERUNGEN = {
@@ -22,9 +22,7 @@ const FORMULIERUNGEN = {
   ],
   schluss: [
     'Ich bin gespannt, wie Gott dich weiter gebrauchen wird.',
-    'Bleib so, wie du bist — du bist ein Geschenk!',
-    'Ich freue mich, dich begleiten zu dürfen.',
-    'Gott hat Großes mit dir vor — ich bin sicher davon.',
+    'Gott hat Großes mit dir vor.',
     'Du bist ein Segen für alle, die dich kennen.',
     'Danke, dass du so bist, wie du bist.',
     'Ich bin stolz auf dich!',
@@ -48,13 +46,33 @@ const FORMULIERUNGEN = {
 export default function TextEditor({ text, onChange, eigenschaften, kindName }) {
   const [formulierungenOffen, setFormulierungenOffen] = useState(false);
   const [aktiveKat, setAktiveKat] = useState('einstieg');
+  const [localText, setLocalText] = useState(text);
+  const debounceRef = useRef(null);
+  const lastSentRef = useRef(text);
 
-  const wortAnzahl = useMemo(() => zaehleWorte(text), [text]);
+  // Sync von außen (z. B. Kindwechsel), aber nicht eigene Tipp-Updates überschreiben
+  useEffect(() => {
+    if (text !== lastSentRef.current) {
+      setLocalText(text);
+      lastSentRef.current = text;
+    }
+  }, [text]);
+
+  useEffect(() => () => clearTimeout(debounceRef.current), []);
+
+  function handleChange(val) {
+    setLocalText(val);
+    lastSentRef.current = val;
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => onChange(val), 600);
+  }
+
+  const wortAnzahl = useMemo(() => zaehleWorte(localText), [localText]);
   const zaehlerStatus = useMemo(() => wortZaehlerStatus(wortAnzahl), [wortAnzahl]);
 
-  const adjektivWarnungen = useMemo(() => pruefAdjektive(text, eigenschaften), [text, eigenschaften]);
-  const vergangenheitWarnungen = useMemo(() => pruefVergangenheit(text), [text]);
-  const nichtWarnungen = useMemo(() => pruefNicht(text), [text]);
+  const adjektivWarnungen = useMemo(() => pruefAdjektive(localText, eigenschaften), [localText, eigenschaften]);
+  const vergangenheitWarnungen = useMemo(() => pruefVergangenheit(localText), [localText]);
+  const nichtWarnungen = useMemo(() => pruefNicht(localText), [localText]);
 
   const alleWarnungen = useMemo(() => {
     const alle = [
@@ -74,7 +92,7 @@ export default function TextEditor({ text, onChange, eigenschaften, kindName }) 
   const formulierungEinfuegen = (formel) => {
     const name = kindName || '[Name]';
     const text_formel = formel.replace(/\[Name\]/g, name);
-    onChange(text ? text + ' ' + text_formel : text_formel);
+    handleChange(localText ? localText + ' ' + text_formel : text_formel);
   };
 
   const KATEGORIEN_LABEL = {
@@ -89,8 +107,8 @@ export default function TextEditor({ text, onChange, eigenschaften, kindName }) 
       {/* Textarea */}
       <div className="relative">
         <textarea
-          value={text}
-          onChange={e => onChange(e.target.value)}
+          value={localText}
+          onChange={e => handleChange(e.target.value)}
           placeholder={`Schreibe hier deinen persönlichen Text für ${kindName || 'das Kind'} (4–5 Sätze)…`}
           className="w-full min-h-[160px] border border-gray-200 rounded-xl px-4 py-3 text-sm text-camissio-dunkelblau focus:outline-none focus:ring-2 focus:ring-camissio-lila resize-y leading-relaxed font-body"
           aria-label="Charakterkarten-Text"
@@ -135,8 +153,8 @@ export default function TextEditor({ text, onChange, eigenschaften, kindName }) 
         />
       </div>
 
-      {/* Hilfreiche Formulierungen */}
-      <div className="border border-gray-200 rounded-xl overflow-hidden">
+      {/* Hilfreiche Formulierungen — vorerst ausgeblendet, muss überarbeitet werden */}
+      {false && <div className="border border-gray-200 rounded-xl overflow-hidden">
         <button
           onClick={() => setFormulierungenOffen(!formulierungenOffen)}
           className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
@@ -183,7 +201,7 @@ export default function TextEditor({ text, onChange, eigenschaften, kindName }) 
             </p>
           </div>
         )}
-      </div>
+      </div>}
     </div>
   );
 }
