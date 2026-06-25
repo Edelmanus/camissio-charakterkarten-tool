@@ -79,14 +79,14 @@ function GruppenApp({ session, onAbmelden }) {
 
     const poll = setInterval(() => {
       getKinder(session.campId, session.gruppe)
-        .then(data => setKinder(prev => {
-          // nur aktualisieren wenn sich etwas geändert hat (korrigiert/text_markup)
-          const hatAenderung = data.some(neu => {
-            const alt = prev.find(k => k.id === neu.id);
-            return alt && (alt.korrigiert !== neu.korrigiert || alt.text_markup !== neu.text_markup || alt.korrektur_notiz !== neu.korrektur_notiz);
-          });
-          return hatAenderung ? data : prev;
-        }))
+        .then(data => setKinder(prev => prev.map(alt => {
+          const neu = data.find(k => k.id === alt.id);
+          if (!neu) return alt;
+          if (alt.korrigiert !== neu.korrigiert || alt.text_markup !== neu.text_markup || alt.korrektur_notiz !== neu.korrektur_notiz) {
+            return { ...alt, korrigiert: neu.korrigiert, text_markup: neu.text_markup, korrektur_notiz: neu.korrektur_notiz };
+          }
+          return alt; // gleiche Referenz → kein Re-render
+        })))
         .catch(() => {});
     }, 30000);
 
