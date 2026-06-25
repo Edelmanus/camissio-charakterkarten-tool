@@ -48,21 +48,11 @@ export default function TextEditor({ text, onChange, eigenschaften, kindName }) 
   const [aktiveKat, setAktiveKat] = useState('einstieg');
   const [localText, setLocalText] = useState(text);
   const debounceRef = useRef(null);
-  const lastSentRef = useRef(text);
-
-  // Sync von außen (z. B. Kindwechsel), aber nicht eigene Tipp-Updates überschreiben
-  useEffect(() => {
-    if (text !== lastSentRef.current) {
-      setLocalText(text);
-      lastSentRef.current = text;
-    }
-  }, [text]);
 
   useEffect(() => () => clearTimeout(debounceRef.current), []);
 
   function handleChange(val) {
     setLocalText(val);
-    lastSentRef.current = val;
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => onChange(val), 600);
   }
