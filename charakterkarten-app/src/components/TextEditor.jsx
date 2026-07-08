@@ -126,9 +126,9 @@ export default function TextEditor({ text, onChange, eigenschaften, kindName }) 
         </div>
         <div className={`text-xs font-semibold shrink-0 ${zaehlerFarbe}`}>
           {wortAnzahl} Wörter
-          {wortAnzahl < 40 && <span className="font-normal text-gray-400"> (Ziel: 40–70)</span>}
-          {wortAnzahl >= 40 && wortAnzahl <= 70 && <span className="font-normal"> ✓</span>}
-          {wortAnzahl > 70 && <span className="font-normal"> (zu lang)</span>}
+          {wortAnzahl < 40 && <span className="font-normal text-gray-400"> (Ziel: 40–60)</span>}
+          {wortAnzahl >= 40 && wortAnzahl <= 60 && <span className="font-normal"> ✓</span>}
+          {wortAnzahl > 60 && <span className="font-normal"> (zu lang)</span>}
         </div>
       </div>
 
@@ -139,7 +139,7 @@ export default function TextEditor({ text, onChange, eigenschaften, kindName }) 
             zaehlerStatus === 'gruen' ? 'bg-camissio-summer-gruen' :
             zaehlerStatus === 'orange' ? 'bg-camissio-orange' : 'bg-gray-300'
           }`}
-          style={{ width: `${Math.min((wortAnzahl / 70) * 100, 100)}%` }}
+          style={{ width: `${Math.min((wortAnzahl / 60) * 100, 100)}%` }}
         />
       </div>
 

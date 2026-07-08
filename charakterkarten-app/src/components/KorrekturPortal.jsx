@@ -526,7 +526,7 @@ function KindDetail({ kind, onZurueck, onKorrigiert, onSpeichern }) {
         </div>
 
         <div>
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Notiz für Gruppenleiter (optional)</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Vollständig korrigierter Text für Gruppenleiter</p>
           <textarea
             value={notiz}
             onChange={e => setNotiz(e.target.value)}

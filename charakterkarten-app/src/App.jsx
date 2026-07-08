@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getSession, clearSession, getKinder, createKind, updateKind, deleteKind, setFertig } from './utils/api';
 import { getCampById } from './config/camps';
 import Header from './components/Header';
@@ -114,9 +114,15 @@ function GruppenApp({ session, onAbmelden }) {
     else setSidebarOffen(false);
   }, []);
 
+  // Läuft pro Kind-ID eine Kette von Speicher-Requests, damit sie nacheinander
+  // (statt parallel) beim Server ankommen — ein älterer Zwischenstand kann so
+  // nie einen neueren überschreiben, selbst bei instabiler Camp-WLAN-Verbindung.
+  const saveQueueRef = useRef({});
+
   const kindLoeschen = useCallback(async (id) => {
     try {
       await deleteKind(id);
+      delete saveQueueRef.current[id];
       setKinder(prev => {
         const neueKinder = prev.filter(k => k.id !== id);
         if (aktivesKindId === id) {
@@ -129,19 +135,25 @@ function GruppenApp({ session, onAbmelden }) {
     }
   }, [aktivesKindId]);
 
-  const kindAktualisieren = useCallback(async (id, updates) => {
+  const kindAktualisieren = useCallback((id, updates) => {
+    // Sofortiges lokales Update: die Oberfläche zeigt den neuen Stand direkt,
+    // unabhängig davon, wie lange der Request zum Server braucht.
+    setKinder(prev => prev.map(k => k.id === id ? { ...k, ...updates } : k));
+
     // Frontend nutzt gewaehltEigenschaften (camelCase), Backend erwartet gewaehlte_eigenschaften
     const normalized = { ...updates };
     if (normalized.gewaehltEigenschaften !== undefined) {
       normalized.gewaehlte_eigenschaften = normalized.gewaehltEigenschaften;
       delete normalized.gewaehltEigenschaften;
     }
-    try {
-      const aktualisiert = await updateKind(id, normalized);
-      setKinder(prev => prev.map(k => k.id === id ? aktualisiert : k));
-    } catch {
-      console.warn('Fehler beim Aktualisieren', updates);
-    }
+
+    const vorherige = saveQueueRef.current[id] || Promise.resolve();
+    saveQueueRef.current[id] = vorherige
+      .catch(() => {})
+      .then(() => updateKind(id, normalized))
+      .catch(() => {
+        alert('Fehler beim Speichern — bitte Internetverbindung prüfen und Seite neu laden.');
+      });
   }, []);
 
   const kindFertigToggle = useCallback(async (id, fertig) => {
