@@ -148,9 +148,14 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
             {statsLaden ? 'Lädt…' : `${gesamtOffen} offen · ${gesamtKorrigiert} korrigiert`}
           </p>
         </div>
-        <button onClick={onAbmelden} className="text-white/60 hover:text-white text-sm transition-colors">
-          Abmelden ×
-        </button>
+        <div className="flex items-center gap-4">
+          <a href="/admin" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white text-sm transition-colors">
+            Fehler-Log ↗
+          </a>
+          <button onClick={onAbmelden} className="text-white/60 hover:text-white text-sm transition-colors">
+            Abmelden ×
+          </button>
+        </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">

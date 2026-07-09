@@ -44,6 +44,14 @@ db.exec(`
     updated_at              TEXT NOT NULL,
     FOREIGN KEY (camp_id) REFERENCES camps(id)
   );
+
+  CREATE TABLE IF NOT EXISTS fehler_log (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    kind_id    TEXT,
+    kontext    TEXT NOT NULL DEFAULT '',
+    meldung    TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL
+  );
 `);
 
 // Camps einmalig befüllen

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, forwardRef, useImperativeHandle } from 'react';
 import { pruefAdjektive, pruefVergangenheit, pruefNicht, zaehleWorte, wortZaehlerStatus } from '../utils/validierung';
 
 const FORMULIERUNGEN = {
@@ -43,7 +43,7 @@ const FORMULIERUNGEN = {
   ],
 };
 
-export default function TextEditor({ text, onChange, eigenschaften, kindName }) {
+const TextEditor = forwardRef(function TextEditor({ text, onChange, eigenschaften, kindName }, ref) {
   const [formulierungenOffen, setFormulierungenOffen] = useState(false);
   const [aktiveKat, setAktiveKat] = useState('einstieg');
   const [localText, setLocalText] = useState(text);
@@ -56,6 +56,14 @@ export default function TextEditor({ text, onChange, eigenschaften, kindName }) 
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => onChange(val), 600);
   }
+
+  // Löst einen ausstehenden Debounce sofort aus (für den manuellen Speichern-Button)
+  useImperativeHandle(ref, () => ({
+    flush: () => {
+      clearTimeout(debounceRef.current);
+      return onChange(localText);
+    },
+  }));
 
   const wortAnzahl = useMemo(() => zaehleWorte(localText), [localText]);
   const zaehlerStatus = useMemo(() => wortZaehlerStatus(wortAnzahl), [wortAnzahl]);
@@ -194,4 +202,6 @@ export default function TextEditor({ text, onChange, eigenschaften, kindName }) 
       </div>}
     </div>
   );
-}
+});
+
+export default TextEditor;

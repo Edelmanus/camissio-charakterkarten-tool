@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getSession, clearSession, getKinder, createKind, updateKind, deleteKind, setFertig } from './utils/api';
+import { getSession, clearSession, getKinder, createKind, updateKind, deleteKind, setFertig, logFehler } from './utils/api';
 import { getCampById } from './config/camps';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -58,6 +58,7 @@ function GruppenApp({ session, onAbmelden }) {
   const [sidebarOffen, setSidebarOffen] = useState(true);
   const [aktiverTab, setAktivesTab] = useState('gruppe'); // mobile tabs: 'gruppe' | 'karte'
   const [neuesKindFormOffen, setNeuesKindFormOffen] = useState(false);
+  const [speicherFehler, setSpeicherFehler] = useState(false);
   const [onboardingGesehen, setOnboardingGesehen] = useState(
     () => !!localStorage.getItem(`onboarding_${session.campId}_${session.gruppe}`)
   );
@@ -148,12 +149,21 @@ function GruppenApp({ session, onAbmelden }) {
     }
 
     const vorherige = saveQueueRef.current[id] || Promise.resolve();
-    saveQueueRef.current[id] = vorherige
+    const aktuelle = vorherige
       .catch(() => {})
-      .then(() => updateKind(id, normalized))
-      .catch(() => {
-        alert('Fehler beim Speichern — bitte Internetverbindung prüfen und Seite neu laden.');
+      .then(() => speichereMitRetry(() => updateKind(id, normalized)))
+      .then(() => { setSpeicherFehler(false); return true; })
+      .catch((err) => {
+        setSpeicherFehler(true);
+        logFehler({
+          kindId: id,
+          kontext: Object.keys(updates).join(','),
+          meldung: err?.message || String(err),
+        });
+        return false;
       });
+    saveQueueRef.current[id] = aktuelle;
+    return aktuelle;
   }, []);
 
   const kindFertigToggle = useCallback(async (id, fertig) => {
@@ -208,6 +218,7 @@ function GruppenApp({ session, onAbmelden }) {
 
   const kindEditorContent = aktiveKind ? (
     <KindEditor
+      key={aktiveKind.id}
       kind={aktiveKind}
       camp={camp}
       onUpdate={(updates) => kindAktualisieren(aktiveKind.id, updates)}
@@ -228,6 +239,12 @@ function GruppenApp({ session, onAbmelden }) {
         anzahlKinder={kinder.length}
         onCampWechseln={onAbmelden}
       />
+
+      {speicherFehler && (
+        <div className="bg-camissio-orange text-white text-sm text-center py-2 px-4 font-semibold">
+          ⚠️ Verbindung instabil — letzte Änderung konnte noch nicht gespeichert werden. Wird automatisch erneut versucht.
+        </div>
+      )}
 
       {/* ── Desktop-Layout (md+) ── */}
       <div className="hidden md:flex gap-3 p-3" style={{ height: 'calc(100vh - 84px)' }}>
@@ -302,6 +319,19 @@ function GruppenApp({ session, onAbmelden }) {
       )}
     </div>
   );
+}
+
+// Versucht einen Save bei Fehlschlag (z. B. Rate-Limit oder kurzer WLAN-Hänger)
+// mehrfach mit steigender Wartezeit, statt ihn sofort aufzugeben.
+async function speichereMitRetry(fn, versuche = 4, wartezeit = 800) {
+  for (let i = 0; i < versuche; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (i === versuche - 1) throw err;
+      await new Promise(r => setTimeout(r, wartezeit * (i + 1)));
+    }
+  }
 }
 
 function campIdFromTyp(typ) {

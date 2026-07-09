@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import RadarChart from './RadarChart';
 import EigenschaftDetail from './EigenschaftDetail';
 import TextEditor from './TextEditor';
@@ -90,6 +90,11 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
   const [alleBrowseOffen, setAlleBrowseOffen] = useState(false);
   const [browseKatId, setBrowseKatId] = useState(null);
   const [eigeneEigenschaft, setEigeneEigenschaft] = useState('');
+  const [localScores, setLocalScores] = useState(kind.scores);
+  const [speichernStatus, setSpeichernStatus] = useState('idle'); // idle | speichert | ok | fehler
+  const scoresDebounceRef = useRef(null);
+  const textEditorRef = useRef(null);
+
   // Eigenschaften laden (camp-spezifisch)
   useEffect(() => {
     const file = camp?.eigenschaftenFile || '/data/eigenschaften-youth-camp.json';
@@ -99,16 +104,39 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
       .catch(console.error);
   }, [camp?.eigenschaftenFile]);
 
-  // Scores der 7 Kategorien
+  useEffect(() => () => clearTimeout(scoresDebounceRef.current), []);
+
+  // Scores der 7 Kategorien — Anzeige aktualisiert sich sofort, das Speichern
+  // wird debounced, damit nicht jeder einzelne Slider-Tick einen eigenen
+  // Request auslöst (das hat zuvor das Rate-Limit ausgeschöpft).
   const handleScore = (katId, val) => {
-    onUpdate({ scores: { ...kind.scores, [katId]: val } });
+    const naechsteScores = { ...localScores, [katId]: val };
+    setLocalScores(naechsteScores);
+    clearTimeout(scoresDebounceRef.current);
+    scoresDebounceRef.current = setTimeout(() => onUpdate({ scores: naechsteScores }), 500);
   };
+
+  function scoresFlush() {
+    clearTimeout(scoresDebounceRef.current);
+    return onUpdate({ scores: localScores });
+  }
+
+  async function manuellSpeichern() {
+    setSpeichernStatus('speichert');
+    const ergebnisse = await Promise.all([
+      textEditorRef.current?.flush(),
+      scoresFlush(),
+    ]);
+    const erfolgreich = ergebnisse.every(r => r !== false);
+    setSpeichernStatus(erfolgreich ? 'ok' : 'fehler');
+    setTimeout(() => setSpeichernStatus('idle'), 2500);
+  }
 
   // Top-3 Kategorien nach Score → Vorschläge berechnen
   const vorschlaege = useMemo(() => {
     if (!eigenschaften) return [];
-    if (Object.values(kind.scores).every(s => !s || s === 0)) return [];
-    const sorted = Object.entries(kind.scores)
+    if (Object.values(localScores).every(s => !s || s === 0)) return [];
+    const sorted = Object.entries(localScores)
       .filter(([, v]) => v > 0)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
@@ -125,7 +153,7 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
       }
     }
     return ergebnis.slice(0, 6);
-  }, [eigenschaften, kind.scores]);
+  }, [eigenschaften, localScores]);
 
   const eigenschaftHinzufuegen = (eig) => {
     if (kind.gewaehltEigenschaften.length >= 2) return;
@@ -166,6 +194,22 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <button
+            onClick={manuellSpeichern}
+            disabled={speichernStatus === 'speichert'}
+            className={`text-sm px-3 md:px-4 py-2 rounded-xl font-semibold transition-colors ${
+              speichernStatus === 'ok'
+                ? 'bg-camissio-summer-gruen text-white'
+                : speichernStatus === 'fehler'
+                  ? 'bg-red-500 text-white'
+                  : 'bg-white/10 text-white/70 active:bg-white/20'
+            }`}
+          >
+            {speichernStatus === 'speichert' && 'Speichert…'}
+            {speichernStatus === 'ok' && '✓ Gespeichert'}
+            {speichernStatus === 'fehler' && '✕ Fehler'}
+            {speichernStatus === 'idle' && 'Speichern'}
+          </button>
+          <button
             onClick={fertigToggle}
             className={`text-sm px-3 md:px-4 py-2 rounded-xl font-semibold transition-colors ${
               kind.fertig
@@ -195,7 +239,7 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
                     key={katId}
                     katId={katId}
                     name={name}
-                    value={kind.scores[katId] ?? 0}
+                    value={localScores[katId] ?? 0}
                     onChange={(val) => handleScore(katId, val)}
                   />
                 );
@@ -208,7 +252,7 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
             <h2 className="font-headline text-lg text-camissio-dunkelblau tracking-wide mb-2">
               PROFIL
             </h2>
-            <RadarChart scores={kind.scores} />
+            <RadarChart scores={localScores} />
           </div>
         </div>
 
@@ -449,6 +493,7 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
               Schreibe 4–5 persönliche Sätze über {vorname} in der dritten Person — ohne die Adjektive direkt zu nennen.
             </p>
             <TextEditor
+              ref={textEditorRef}
               text={kind.text}
               onChange={(text) => onUpdate({ text })}
               eigenschaften={kind.gewaehltEigenschaften}
@@ -456,17 +501,35 @@ export default function KindEditor({ kind, camp, onUpdate, onFertigToggle }) {
             />
           </div>
 
-          {/* Fertig-Button */}
-          <button
-            onClick={fertigToggle}
-            className={`w-full py-4 rounded-2xl font-headline text-xl tracking-wide transition-colors ${
-              kind.fertig
-                ? 'bg-camissio-summer-gruen text-white'
-                : 'bg-camissio-dunkelblau text-white hover:opacity-90'
-            }`}
-          >
-            {kind.fertig ? '✓ Zur Korrektur eingereicht' : 'Zur Korrektur →'}
-          </button>
+          {/* Speichern + Fertig-Button */}
+          <div className="flex gap-2">
+            <button
+              onClick={manuellSpeichern}
+              disabled={speichernStatus === 'speichert'}
+              className={`shrink-0 px-5 py-4 rounded-2xl font-headline text-xl tracking-wide transition-colors ${
+                speichernStatus === 'ok'
+                  ? 'bg-camissio-summer-gruen text-white'
+                  : speichernStatus === 'fehler'
+                    ? 'bg-red-500 text-white'
+                    : 'bg-gray-100 text-camissio-dunkelblau hover:bg-gray-200'
+              }`}
+            >
+              {speichernStatus === 'speichert' && 'Speichert…'}
+              {speichernStatus === 'ok' && '✓ Gespeichert'}
+              {speichernStatus === 'fehler' && '✕ Fehler'}
+              {speichernStatus === 'idle' && 'Speichern'}
+            </button>
+            <button
+              onClick={fertigToggle}
+              className={`flex-1 py-4 rounded-2xl font-headline text-xl tracking-wide transition-colors ${
+                kind.fertig
+                  ? 'bg-camissio-summer-gruen text-white'
+                  : 'bg-camissio-dunkelblau text-white hover:opacity-90'
+              }`}
+            >
+              {kind.fertig ? '✓ Zur Korrektur eingereicht' : 'Zur Korrektur →'}
+            </button>
+          </div>
         </div>
       </div>
 

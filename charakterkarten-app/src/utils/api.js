@@ -90,3 +90,31 @@ export function updateKorrektur(id, data, passwort) {
     body: JSON.stringify(data),
   }).then(r => r.ok ? r.json() : Promise.reject(new Error('Fehler beim Speichern')));
 }
+
+// --- Fehler-Log ---
+// Best-effort-Meldung endgültig fehlgeschlagener Saves — wirft nie,
+// damit ein kaputtes Logging nicht selbst zum Problem wird.
+export function logFehler(payload) {
+  return fetch(`${BASE}/fehler-log`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  }).catch(() => {});
+}
+
+// --- Admin (eigenes Passwort, getrennt vom Korrektur-Team) ---
+export async function adminLogin(passwort) {
+  const res = await fetch(`${BASE}/admin/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ passwort }),
+  });
+  if (!res.ok) throw new Error('Falsches Passwort');
+  return true;
+}
+
+export function getFehlerLog(passwort) {
+  return fetch(`${BASE}/admin/fehler-log`, {
+    headers: { 'x-admin-password': passwort },
+  }).then(r => r.ok ? r.json() : Promise.reject(new Error('Nicht autorisiert')));
+}
