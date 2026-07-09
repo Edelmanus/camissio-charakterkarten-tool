@@ -22,6 +22,7 @@ Charakterkarten Tool/
 │       │   ├── storage.js        ← Session-Hilfsfunktionen (sessionStorage)
 │       │   └── validierung.js    ← Texthilfen & Live-Warnungen
 │       ├── App.jsx               ← Root: Session-Flow, API-State
+│       ├── main.jsx              ← Einstiegspunkt: schaltet per pathname zwischen App / AdminPage
 │       └── index.css             ← Tailwind + CAMISSIO CSS-Variablen
 ├── charakterkarten-backend/      ← Node.js + Express + node:sqlite Backend
 │   ├── server.js                 ← Express-Server (Port 3001)
@@ -30,7 +31,9 @@ Charakterkarten Tool/
 │   ├── routes/
 │   │   ├── camps.js
 │   │   ├── kinder.js
-│   │   └── korrektur.js
+│   │   ├── korrektur.js
+│   │   ├── fehlerLog.js       ← POST: Client meldet gescheiterte Saves (best effort)
+│   │   └── admin.js           ← Admin-Login + Fehler-Log lesen (eigenes Passwort)
 │   └── package.json
 └── referenzen/                   ← INTERN, nicht im Git
 ```
@@ -78,12 +81,13 @@ npm run dev             # Port 5173 (proxyt /api/* → :3001)
 
 | Datei | Aufgabe |
 |---|---|
-| `App.jsx` | Session-Flow (CampAuswahl → GruppenApp / KorrekturPortal), API-State |
+| `App.jsx` | Session-Flow (CampAuswahl → GruppenApp / KorrekturPortal), API-State. `kindAktualisieren` speichert optimistisch (lokaler State sofort) und serialisiert Requests pro Kind-ID (Warteschlange), damit bei instabilem Camp-WLAN kein neuerer Stand von einem älteren überschrieben wird. Bei endgültigem Fehlschlag (nach Retry mit Backoff): Banner + Meldung an `/api/fehler-log` |
 | `CampAuswahl.jsx` | 3-Schritt-Login: Camp-Typ → Standort → Gruppe + Korrektur-Portal-Button |
 | `KorrekturPortal.jsx` | Passwortgeschützte Korrektur-Ansicht (alle fertigen Karten) |
 | `KorrigiertAnsicht.jsx` | Read-only Ansicht korrigierter Karten beim Gruppenleiter (inkl. Markup) |
 | `MarkupEditor.jsx` | ContentEditable-Editor mit Toolbar (Markieren/Durchstreichen) |
-| `KindEditor.jsx` | Haupt-Editor: Slider, Vorschläge, Texteditor, Export. Bei `korrigiert=true` → KorrigiertAnsicht |
+| `KindEditor.jsx` | Haupt-Editor: Slider, Vorschläge, Texteditor, Export. Bei `korrigiert=true` → KorrigiertAnsicht. Score-Slider debounced (500ms); manuelle "Speichern"-Buttons oben & unten mit Live-Status |
+| `AdminPage.jsx` | Eigenständige Seite unter `/admin` (eigenes Passwort, `ADMIN_PASSWORT`), zeigt das Fehler-Log gescheiterter Saves |
 | `Sidebar.jsx` | 3 Sektionen: Entwurf / Fertig / Korrigiert |
 | `Header.jsx` | Pill-Header: Camp-Name + Standort + Gruppe |
 | `RadarChart.jsx` | Recharts-Radardiagramm der 7 Wesenszüge |
@@ -127,6 +131,14 @@ kinder (
   created_at TEXT,
   updated_at TEXT
 )
+
+fehler_log (
+  id INTEGER,           -- AUTOINCREMENT
+  kind_id TEXT,          -- lose verknüpft (LEFT JOIN beim Lesen, kein FK-Constraint)
+  kontext TEXT,          -- betroffene Felder, z.B. "text,scores"
+  meldung TEXT,          -- Fehlermeldung / HTTP-Status
+  created_at TEXT
+)
 ```
 
 ## Session-Flow
@@ -152,13 +164,16 @@ Startseite (CampAuswahl)
 | `POST` | `/api/korrektur/login` | Passwort prüfen |
 | `GET` | `/api/korrektur/kinder` | Alle fertigen Karten (Header: `x-korrektur-password`) |
 | `PUT` | `/api/korrektur/kinder/:id` | Markup + Notiz + korrigiert speichern |
+| `POST` | `/api/fehler-log` | Client meldet einen endgültig gescheiterten Save (ohne Auth, best effort) |
+| `POST` | `/api/admin/login` | Admin-Passwort prüfen (`ADMIN_PASSWORT`, getrennt vom Korrektur-Passwort) |
+| `GET` | `/api/admin/fehler-log` | Fehler-Log lesen (Header: `x-admin-password`) — Ansicht unter `/admin` |
 
 ## Validierungsregeln im TextEditor
 
 - **Regel 4** — Adjektiv der gewählten Eigenschaft im Text → gelbe Warnung
 - **Regel 7** — Vergangenheitsformen (war, hatte, ging…) → blaue Warnung
 - **Regel 9** — „nicht" im Text → orange Warnung
-- **Wortzähler** — Ziel: 60–100 Wörter (grau → grün → orange)
+- **Wortzähler** — Ziel: 40–60 Wörter (grau → grün → orange)
 
 ## Eigenschaften-JSON — Struktur
 
@@ -205,12 +220,16 @@ Branch: main
 /opt/charakterkarten/                        ← Git-Repo (git clone)
   charakterkarten-backend/
     server.js                                ← läuft via PM2 auf Port 3001
-    .env                                     ← KORREKTUR_PASSWORT, PORT (nicht im Git!)
+    .env                                     ← KORREKTUR_PASSWORT, ADMIN_PASSWORT, PORT (nicht im Git!)
     backups/                                 ← tägl. SQLite-Backups (nicht im Git)
   charakterkarten-app/
     dist/                                    ← Vite Build, wird von Caddy serviert
-/etc/caddy/Caddyfile                         ← Caddy-Konfiguration
+/etc/caddy/Caddyfile                         ← Caddy-Konfiguration (SPA-Fallback: try_files → index.html,
+                                                nötig damit /admin und andere Client-Routen beim Direktaufruf
+                                                funktionieren)
 ```
+
+**Admin-Bereich:** `/admin` zeigt das Fehler-Log gescheiterter Speicherversuche, geschützt durch `ADMIN_PASSWORT` (eigenes Passwort, getrennt von `KORREKTUR_PASSWORT`).
 
 ### Deployment-Befehle (Update einspielen)
 ```bash
