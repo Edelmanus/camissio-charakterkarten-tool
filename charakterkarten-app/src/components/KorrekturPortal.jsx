@@ -121,11 +121,11 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
     }
   }
 
-  async function handleSpeichern(kind, text, textMarkup, notiz) {
+  async function handleSpeichern(kind, text, textMarkup, notiz, eigenschaften) {
     try {
       const aktualisiert = await updateKorrektur(
         kind.id,
-        { text, text_markup: textMarkup, korrektur_notiz: notiz, korrigiert: true },
+        { text, text_markup: textMarkup, korrektur_notiz: notiz, gewaehlte_eigenschaften: eigenschaften, korrigiert: true },
         passwort
       );
       updateKindInCache(ausgewaehlt.typ, ausgewaehlt.standort, aktualisiert);
@@ -461,16 +461,37 @@ function GruppenDetail({ eintrag, gruppe, kinder, alleKinder, filter, onFilterCh
 function KindDetail({ kind, onZurueck, onKorrigiert, onSpeichern }) {
   const [markup, setMarkup] = useState(kind.text_markup || '');
   const [notiz, setNotiz] = useState(kind.korrektur_notiz || '');
+  const [eigenschaften, setEigenschaften] = useState(kind.gewaehltEigenschaften || []);
+  const [entfernteEigenschaften, setEntfernteEigenschaften] = useState([]);
+  const [eigeneEigenschaft, setEigeneEigenschaft] = useState('');
   const [speichert, setSpeichert] = useState(false);
 
   useEffect(() => {
     setMarkup(kind.text_markup || '');
     setNotiz(kind.korrektur_notiz || '');
+    setEigenschaften(kind.gewaehltEigenschaften || []);
+    setEntfernteEigenschaften([]);
+    setEigeneEigenschaft('');
   }, [kind.id]);
+
+  function eigenschaftEntfernen(name) {
+    const entfernt = eigenschaften.find(e => e.name === name);
+    setEigenschaften(prev => prev.filter(e => e.name !== name));
+    if (entfernt) setEntfernteEigenschaften(prev => [...prev, entfernt]);
+  }
+
+  function eigenschaftHinzufuegen() {
+    const name = eigeneEigenschaft.trim();
+    if (!name || eigenschaften.length >= 2 || eigenschaften.find(e => e.name === name)) return;
+    setEigenschaften(prev => [...prev, { name, katFarbe: '#9ca3af' }]);
+    setEntfernteEigenschaften(prev => prev.slice(1));
+    setEigeneEigenschaft('');
+  }
 
   async function handleSpeichern() {
     setSpeichert(true);
-    await onSpeichern(kind, kind.text, markup, notiz);
+    await onSpeichern(kind, kind.text, markup, notiz, eigenschaften);
+    setEntfernteEigenschaften([]);
     setSpeichert(false);
   }
 
@@ -496,19 +517,52 @@ function KindDetail({ kind, onZurueck, onKorrigiert, onSpeichern }) {
       </div>
 
       <div className="p-6 max-w-2xl mx-auto space-y-5">
-        {kind.gewaehltEigenschaften?.length > 0 && (
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Gewählte Eigenschaften</p>
-            <div className="flex flex-wrap gap-2">
-              {kind.gewaehltEigenschaften.map((e, i) => (
-                <span key={i} className="px-2.5 py-1 rounded-full text-xs font-medium text-white"
-                  style={{ backgroundColor: e.katFarbe || '#1c4554' }}>
-                  {e.name}
-                </span>
-              ))}
-            </div>
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Gewählte Eigenschaften</p>
+          <div className="flex flex-wrap gap-2">
+            {eigenschaften.length === 0 && (
+              <p className="text-sm text-gray-400">Keine Eigenschaften gewählt.</p>
+            )}
+            {eigenschaften.map((e, i) => (
+              <span key={i} className="flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full text-xs font-medium text-white"
+                style={{ backgroundColor: e.katFarbe || '#1c4554' }}>
+                {e.name}
+                <button
+                  onClick={() => eigenschaftEntfernen(e.name)}
+                  className="text-white/70 hover:text-white leading-none"
+                  title="Eigenschaft entfernen"
+                >
+                  ✕
+                </button>
+              </span>
+            ))}
+            {entfernteEigenschaften.map((e, i) => (
+              <span key={`entfernt-${i}`} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 border border-dashed border-gray-300 text-gray-400">
+                <span className="line-through">{e.name}</span>
+                <span className="text-[10px] normal-case font-normal">(vom GL)</span>
+              </span>
+            ))}
           </div>
-        )}
+          {eigenschaften.length < 2 && (
+            <div className="flex gap-2 mt-2">
+              <input
+                type="text"
+                value={eigeneEigenschaft}
+                onChange={e => setEigeneEigenschaft(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') eigenschaftHinzufuegen(); }}
+                placeholder="Eigenschaft korrigieren/hinzufügen…"
+                className="flex-1 border border-gray-200 rounded-xl px-3 py-1.5 text-sm text-camissio-dunkelblau focus:outline-none focus:ring-2 focus:ring-camissio-dunkelblau/20"
+              />
+              <button
+                onClick={eigenschaftHinzufuegen}
+                disabled={!eigeneEigenschaft.trim()}
+                className="px-3 py-1.5 bg-camissio-dunkelblau text-white rounded-xl text-sm font-semibold hover:opacity-90 disabled:opacity-40 transition-opacity"
+              >
+                +
+              </button>
+            </div>
+          )}
+        </div>
 
         {kind.bibelvers && (
           <div className="p-3 bg-white rounded-xl border border-gray-100">

@@ -89,6 +89,15 @@ export default function MarkupEditor({ initialHtml, plainText, onChange }) {
     savedRangeRef.current = null;
   }
 
+  function kommentarLoeschen() {
+    const span = aktiverKommentar?.spanEl;
+    if (span) {
+      span.replaceWith(...span.childNodes);
+    }
+    setAktiverKommentar(null);
+    onChange(editorRef.current?.innerHTML || '');
+  }
+
   function handleEditorClick(e) {
     const span = e.target.closest('.inline-kommentar');
     if (!span) return;
@@ -192,12 +201,20 @@ export default function MarkupEditor({ initialHtml, plainText, onChange }) {
         >
           <div className="flex items-start justify-between gap-2">
             <p className="text-xs leading-relaxed">{aktiverKommentar.text}</p>
-            <button
-              onClick={() => setAktiverKommentar(null)}
-              className="text-white/60 hover:text-white text-sm leading-none shrink-0 mt-0.5"
-            >
-              ×
-            </button>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={kommentarLoeschen}
+                className="px-2 py-0.5 rounded-md text-xs font-semibold bg-red-500/90 text-white hover:bg-red-500 transition-colors"
+              >
+                Löschen
+              </button>
+              <button
+                onClick={() => setAktiverKommentar(null)}
+                className="text-white/60 hover:text-white text-sm leading-none mt-0.5"
+              >
+                ×
+              </button>
+            </div>
           </div>
           {/* Pfeil nach unten */}
           <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-camissio-dunkelblau" />
