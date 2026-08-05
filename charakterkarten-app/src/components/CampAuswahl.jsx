@@ -8,6 +8,13 @@ const GRUPPEN_TYPEN = [
 ];
 const GRUPPEN_NUMMERN = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
+// YOUTH CAMP hat eigene Gruppennamen: Mädchen 1A–1G / 2A–2G, Jungen 3A–3D / 4A–4D
+const YOUTH_CAMP_BUCHSTABEN = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+const YOUTH_CAMP_GRUPPEN = {
+  M: [1, 2].flatMap(n => YOUTH_CAMP_BUCHSTABEN.map(b => `${n}${b}`)),
+  J: [3, 4].flatMap(n => YOUTH_CAMP_BUCHSTABEN.slice(0, 4).map(b => `${n}${b}`)),
+};
+
 export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
   const [schritt, setSchritt] = useState(1); // 1=Typ, 2=Standort, 3=Gruppe
   const [campTyp, setCampTyp] = useState(null);
@@ -24,6 +31,13 @@ export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
   const [loginLaed, setLoginLaed] = useState(false);
 
   const campConfig = CAMPS.find(c => c.id === campTypKey(campTyp));
+  const istYouthCamp = campTyp === 'YOUTH CAMP';
+  const gruppenOptionen = istYouthCamp
+    ? (gruppenPrefix ? YOUTH_CAMP_GRUPPEN[gruppenPrefix] : [])
+    : GRUPPEN_NUMMERN;
+  const gewaehlteGruppe = gruppenPrefix && gruppenNummer
+    ? (istYouthCamp ? String(gruppenNummer) : `${gruppenPrefix}${gruppenNummer}`)
+    : null;
 
   useEffect(() => {
     if (!campTyp) return;
@@ -47,8 +61,8 @@ export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
   }
 
   function handleStart() {
-    if (!gewaehlteCampId || !gruppenPrefix || !gruppenNummer) return;
-    const gruppe = `${gruppenPrefix}${gruppenNummer}`;
+    if (!gewaehlteCampId || !gewaehlteGruppe) return;
+    const gruppe = gewaehlteGruppe;
     const camp = camps.find(c => c.id === gewaehlteCampId);
     saveSession({ campId: gewaehlteCampId, gruppe, campTyp, campStandort: camp.standort, campCode: camp.code });
     onSessionGestartet({ campId: gewaehlteCampId, gruppe, campTyp, campStandort: camp.standort, campCode: camp.code });
@@ -175,40 +189,44 @@ export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
               {GRUPPEN_TYPEN.map(({ prefix, label }) => (
                 <button
                   key={prefix}
-                  onClick={() => setGruppenPrefix(prefix)}
+                  onClick={() => { setGruppenPrefix(prefix); setGruppenNummer(null); }}
                   className={`flex-1 py-3 rounded-xl text-sm font-semibold border-2 transition-colors ${
                     gruppenPrefix === prefix
                       ? 'border-camissio-dunkelblau bg-camissio-dunkelblau text-white'
                       : 'border-gray-200 text-gray-500 hover:border-camissio-dunkelblau/50'
                   }`}
                 >
-                  {label} ({prefix})
+                  {label}{!istYouthCamp && ` (${prefix})`}
                 </button>
               ))}
             </div>
-            <div className="grid grid-cols-5 gap-2 mb-6">
-              {GRUPPEN_NUMMERN.map(n => (
-                <button
-                  key={n}
-                  onClick={() => setGruppenNummer(n)}
-                  className={`py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors ${
-                    gruppenNummer === n
-                      ? 'border-camissio-dunkelblau bg-camissio-dunkelblau text-white'
-                      : 'border-gray-200 text-gray-500 hover:border-camissio-dunkelblau/50'
-                  }`}
-                >
-                  {n}
-                </button>
-              ))}
-            </div>
+            {istYouthCamp && !gruppenPrefix ? (
+              <p className="text-center text-sm text-gray-400 mb-6">Bitte zuerst Mädchen oder Jungen wählen.</p>
+            ) : (
+              <div className="grid grid-cols-5 gap-2 mb-6">
+                {gruppenOptionen.map(n => (
+                  <button
+                    key={n}
+                    onClick={() => setGruppenNummer(n)}
+                    className={`py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors ${
+                      gruppenNummer === n
+                        ? 'border-camissio-dunkelblau bg-camissio-dunkelblau text-white'
+                        : 'border-gray-200 text-gray-500 hover:border-camissio-dunkelblau/50'
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+            )}
             <button
               onClick={handleStart}
-              disabled={!gruppenPrefix || !gruppenNummer}
+              disabled={!gewaehlteGruppe}
               className="w-full py-3 rounded-xl font-headline text-lg tracking-wide text-white transition-all disabled:opacity-40"
               style={{ backgroundColor: campConfig?.farbe || '#1c4554' }}
             >
-              {gruppenPrefix && gruppenNummer
-                ? `Gruppe ${gruppenPrefix}${gruppenNummer} starten →`
+              {gewaehlteGruppe
+                ? `Gruppe ${gewaehlteGruppe} starten →`
                 : 'Gruppe wählen'}
             </button>
           </div>

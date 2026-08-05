@@ -1,12 +1,5 @@
 import { useState } from 'react';
-
-function geschlechtAusGruppe(gruppe) {
-  if (!gruppe) return 'keine';
-  const prefix = gruppe[0].toUpperCase();
-  if (prefix === 'J') return 'männlich';
-  if (prefix === 'M') return 'weiblich';
-  return 'keine';
-}
+import { geschlechtAusGruppe } from '../utils/gruppen';
 
 export default function LeereAnsicht({ onNeuesKind, gruppe }) {
   const [formOffen, setFormOffen] = useState(false);

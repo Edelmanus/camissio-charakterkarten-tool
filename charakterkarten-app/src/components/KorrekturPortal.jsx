@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getKorrekturStats, getKorrekturKinder, updateKorrektur } from '../utils/api';
 import MarkupEditor from './MarkupEditor';
 import { CAMPPLAN, getISOWeek, formatDatum, eintragLabel } from '../config/camps';
+import { sektionAusGruppe } from '../utils/gruppen';
 
 export default function KorrekturPortal({ passwort, onAbmelden }) {
   const [stats, setStats] = useState([]); // [{ camp_typ, camp_standort, camp_code, gesamt, korrigiert }]
@@ -625,14 +626,14 @@ function gruppenSortiert(kinder) {
   }
   return Object.entries(map)
     .sort(([a], [b]) => {
-      const sA = a.startsWith('M') ? 0 : 1;
-      const sB = b.startsWith('M') ? 0 : 1;
+      const sA = sektionAusGruppe(a) === 'mädels' ? 0 : 1;
+      const sB = sektionAusGruppe(b) === 'mädels' ? 0 : 1;
       if (sA !== sB) return sA - sB;
       return a.localeCompare(b, 'de', { numeric: true });
     })
     .map(([gruppe, kinder]) => ({
       gruppe,
-      sektion: gruppe.startsWith('M') ? 'mädels' : 'jungs',
+      sektion: sektionAusGruppe(gruppe),
       kinder,
     }));
 }

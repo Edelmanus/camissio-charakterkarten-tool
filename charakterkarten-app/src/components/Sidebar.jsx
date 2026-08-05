@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { geschlechtAusGruppe } from '../utils/gruppen';
 
 function NeuesKindForm({ onAnlegen, onAbbrechen, geschlechtVorgabe }) {
   const [name, setName] = useState('');
@@ -97,14 +98,6 @@ function Sektion({ titel, farbe, kinder, aktivesKindId, onAktivieren, onLoeschen
       ))}
     </div>
   );
-}
-
-function geschlechtAusGruppe(gruppe) {
-  if (!gruppe) return 'keine';
-  const prefix = gruppe[0].toUpperCase();
-  if (prefix === 'J') return 'männlich';
-  if (prefix === 'M') return 'weiblich';
-  return 'keine';
 }
 
 export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeuesKind, onKindLoeschen, gruppe, formOffen, onFormOffenChange }) {
