@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { geschlechtAusGruppe } from '../utils/gruppen';
 
-export default function LeereAnsicht({ onNeuesKind, gruppe }) {
+export default function LeereAnsicht({ onNeuesKind, gruppe, campCode }) {
   const [formOffen, setFormOffen] = useState(false);
   const [name, setName] = useState('');
-  const geschlecht = geschlechtAusGruppe(gruppe);
+  const geschlecht = geschlechtAusGruppe(gruppe, campCode);
 
   const submit = (e) => {
     e.preventDefault();

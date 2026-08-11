@@ -100,8 +100,8 @@ function Sektion({ titel, farbe, kinder, aktivesKindId, onAktivieren, onLoeschen
   );
 }
 
-export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeuesKind, onKindLoeschen, gruppe, formOffen, onFormOffenChange }) {
-  const geschlechtVorgabe = geschlechtAusGruppe(gruppe);
+export default function Sidebar({ kinder, aktivesKindId, onKindAktivieren, onNeuesKind, onKindLoeschen, gruppe, campCode, formOffen, onFormOffenChange }) {
+  const geschlechtVorgabe = geschlechtAusGruppe(gruppe, campCode);
 
   const handleAnlegen = (name, geschlecht) => {
     onNeuesKind(name, geschlecht);

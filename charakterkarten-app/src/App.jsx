@@ -209,6 +209,7 @@ function GruppenApp({ session, onAbmelden }) {
     aktivesKindId,
     camp,
     gruppe: session.gruppe,
+    campCode: session.campCode,
     onKindAktivieren: kindAktivieren,
     onNeuesKind: neuesKindAnlegen,
     onKindLoeschen: kindLoeschen,
@@ -225,7 +226,7 @@ function GruppenApp({ session, onAbmelden }) {
       onFertigToggle={(fertig) => kindFertigToggle(aktiveKind.id, fertig)}
     />
   ) : (
-    <LeereAnsicht onNeuesKind={neuesKindAnlegen} gruppe={session.gruppe} />
+    <LeereAnsicht onNeuesKind={neuesKindAnlegen} gruppe={session.gruppe} campCode={session.campCode} />
   );
 
   return (

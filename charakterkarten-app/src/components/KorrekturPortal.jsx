@@ -286,7 +286,7 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
 }
 
 function GruppenUebersicht({ eintrag, kinder, onGruppeWaehlen, onZurueckZuStadt }) {
-  const gruppen = gruppenSortiert(kinder);
+  const gruppen = gruppenSortiert(kinder, eintrag.code);
   const offen = kinder.filter(k => !k.korrigiert).length;
   const korrigiert = kinder.filter(k => k.korrigiert).length;
 
@@ -618,7 +618,7 @@ function KindDetail({ kind, onZurueck, onKorrigiert, onSpeichern }) {
   );
 }
 
-function gruppenSortiert(kinder) {
+function gruppenSortiert(kinder, campCode) {
   const map = {};
   for (const k of kinder) {
     if (!map[k.gruppe]) map[k.gruppe] = [];
@@ -626,14 +626,14 @@ function gruppenSortiert(kinder) {
   }
   return Object.entries(map)
     .sort(([a], [b]) => {
-      const sA = sektionAusGruppe(a) === 'mädels' ? 0 : 1;
-      const sB = sektionAusGruppe(b) === 'mädels' ? 0 : 1;
+      const sA = sektionAusGruppe(a, campCode) === 'mädels' ? 0 : 1;
+      const sB = sektionAusGruppe(b, campCode) === 'mädels' ? 0 : 1;
       if (sA !== sB) return sA - sB;
       return a.localeCompare(b, 'de', { numeric: true });
     })
     .map(([gruppe, kinder]) => ({
       gruppe,
-      sektion: sektionAusGruppe(gruppe),
+      sektion: sektionAusGruppe(gruppe, campCode),
       kinder,
     }));
 }

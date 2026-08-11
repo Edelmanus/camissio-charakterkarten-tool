@@ -8,11 +8,19 @@ const GRUPPEN_TYPEN = [
 ];
 const GRUPPEN_NUMMERN = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
-// YOUTH CAMP hat eigene Gruppennamen: Mädchen 1A–1G / 2A–2G, Jungen 3A–3D / 4A–4D
+// YOUTH CAMP hat je Standort eigene Gruppennamen (unterscheidet sich Jahr für Jahr):
 const YOUTH_CAMP_BUCHSTABEN = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-const YOUTH_CAMP_GRUPPEN = {
-  M: [1, 2].flatMap(n => YOUTH_CAMP_BUCHSTABEN.map(b => `${n}${b}`)),
-  J: [3, 4].flatMap(n => YOUTH_CAMP_BUCHSTABEN.slice(0, 4).map(b => `${n}${b}`)),
+const YOUTH_CAMP_GRUPPEN_SCHEMES = {
+  // YC1: Mädchen 1A–1G / 2A–2G, Jungen 3A–3D / 4A–4D
+  YC1: {
+    M: [1, 2].flatMap(n => YOUTH_CAMP_BUCHSTABEN.map(b => `${n}${b}`)),
+    J: [3, 4].flatMap(n => YOUTH_CAMP_BUCHSTABEN.slice(0, 4).map(b => `${n}${b}`)),
+  },
+  // YC2: Jungs = Dorf 1 (Hütten A–G), Mädels = Dorf 2 (Hütten A–G)
+  YC2: {
+    J: YOUTH_CAMP_BUCHSTABEN.map(b => `1${b}`),
+    M: YOUTH_CAMP_BUCHSTABEN.map(b => `2${b}`),
+  },
 };
 
 export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
@@ -32,8 +40,10 @@ export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
 
   const campConfig = CAMPS.find(c => c.id === campTypKey(campTyp));
   const istYouthCamp = campTyp === 'YOUTH CAMP';
+  const gewaehlterCamp = camps.find(c => c.id === gewaehlteCampId);
+  const youthCampSchema = YOUTH_CAMP_GRUPPEN_SCHEMES[gewaehlterCamp?.code] || YOUTH_CAMP_GRUPPEN_SCHEMES.YC1;
   const gruppenOptionen = istYouthCamp
-    ? (gruppenPrefix ? YOUTH_CAMP_GRUPPEN[gruppenPrefix] : [])
+    ? (gruppenPrefix ? youthCampSchema[gruppenPrefix] : [])
     : GRUPPEN_NUMMERN;
   const gewaehlteGruppe = gruppenPrefix && gruppenNummer
     ? (istYouthCamp ? String(gruppenNummer) : `${gruppenPrefix}${gruppenNummer}`)
@@ -57,13 +67,15 @@ export default function CampAuswahl({ onSessionGestartet, onKorrekturPortal }) {
 
   function handleStandortWahl(id) {
     setGewaehlteCampId(id);
+    setGruppenPrefix(null);
+    setGruppenNummer(null);
     setSchritt(3);
   }
 
   function handleStart() {
     if (!gewaehlteCampId || !gewaehlteGruppe) return;
     const gruppe = gewaehlteGruppe;
-    const camp = camps.find(c => c.id === gewaehlteCampId);
+    const camp = gewaehlterCamp;
     saveSession({ campId: gewaehlteCampId, gruppe, campTyp, campStandort: camp.standort, campCode: camp.code });
     onSessionGestartet({ campId: gewaehlteCampId, gruppe, campTyp, campStandort: camp.standort, campCode: camp.code });
   }
