@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getKorrekturStats, getKorrekturKinder, updateKorrektur } from '../utils/api';
+import { getKorrekturStats, getKorrekturKinder, updateKorrektur, sperreKind, entsperreKind, getAktiveSperren } from '../utils/api';
 import MarkupEditor from './MarkupEditor';
 import { CAMPPLAN, getISOWeek, formatDatum, eintragLabel } from '../config/camps';
 import { sektionAusGruppe } from '../utils/gruppen';
@@ -15,10 +15,26 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
   const [aktiveGruppe, setAktiveGruppe] = useState(null);
   const [aktivesKindId, setAktivesKindId] = useState(null);
   const [filter, setFilter] = useState('alle');
+  const [clientId] = useState(() => crypto.randomUUID());
+  const [sperren, setSperren] = useState({}); // { [kindId]: laeuftAb }
 
   const aktuelleKW = getISOWeek(new Date());
 
   useEffect(() => { ladeStats(); }, []);
+
+  useEffect(() => {
+    if (!ausgewaehlt) return;
+    let abgebrochen = false;
+    async function ladeSperren() {
+      try {
+        const data = await getAktiveSperren(passwort);
+        if (!abgebrochen) setSperren(data);
+      } catch {}
+    }
+    ladeSperren();
+    const poll = setInterval(ladeSperren, 15000);
+    return () => { abgebrochen = true; clearInterval(poll); };
+  }, [ausgewaehlt, passwort]);
 
   useEffect(() => {
     if (statsLaden) return;
@@ -119,6 +135,28 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
       updateStats(ausgewaehlt.typ, ausgewaehlt.standort, kind, aktualisiert);
     } catch {
       alert('Fehler beim Speichern.');
+    }
+  }
+
+  async function handleKindOeffnen(kindId) {
+    try {
+      await sperreKind(kindId, passwort, clientId);
+      setAktivesKindId(kindId);
+    } catch (err) {
+      if (err.status === 409) {
+        const bis = err.laeuftAb ? new Date(err.laeuftAb).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : null;
+        const meldung = `Diese Karte wird gerade von jemand anderem bearbeitet${bis ? ` (Sperre läuft ab um ${bis} Uhr)` : ''}. Trotzdem öffnen?`;
+        if (window.confirm(meldung)) {
+          try {
+            await sperreKind(kindId, passwort, clientId, true);
+            setAktivesKindId(kindId);
+          } catch {
+            alert('Karte konnte nicht geöffnet werden.');
+          }
+        }
+      } else {
+        alert('Karte konnte nicht geöffnet werden.');
+      }
     }
   }
 
@@ -267,7 +305,8 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
               filter={filter}
               onFilterChange={setFilter}
               onZurueck={() => setAktiveGruppe(null)}
-              onKindWaehlen={setAktivesKindId}
+              onKindWaehlen={handleKindOeffnen}
+              sperren={sperren}
             />
           )}
 
@@ -277,6 +316,8 @@ export default function KorrekturPortal({ passwort, onAbmelden }) {
               onZurueck={() => setAktivesKindId(null)}
               onKorrigiert={handleKorrigiert}
               onSpeichern={handleSpeichern}
+              passwort={passwort}
+              clientId={clientId}
             />
           )}
         </main>
@@ -387,7 +428,7 @@ function GruppenUebersicht({ eintrag, kinder, onGruppeWaehlen, onZurueckZuStadt 
   );
 }
 
-function GruppenDetail({ eintrag, gruppe, kinder, alleKinder, filter, onFilterChange, onZurueck, onKindWaehlen }) {
+function GruppenDetail({ eintrag, gruppe, kinder, alleKinder, filter, onFilterChange, onZurueck, onKindWaehlen, sperren }) {
   const offen = alleKinder.filter(k => !k.korrigiert).length;
 
   return (
@@ -444,6 +485,12 @@ function GruppenDetail({ eintrag, gruppe, kinder, alleKinder, filter, onFilterCh
               )}
             </div>
             <div className="flex items-center gap-2 shrink-0">
+              {sperren?.[kind.id] && (
+                <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-yellow-50 text-yellow-700 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
+                  🔒 in Bearbeitung
+                </span>
+              )}
               {kind.korrektur_notiz && <span className="text-xs text-gray-400">💬</span>}
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                 kind.korrigiert ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
@@ -459,13 +506,14 @@ function GruppenDetail({ eintrag, gruppe, kinder, alleKinder, filter, onFilterCh
   );
 }
 
-function KindDetail({ kind, onZurueck, onKorrigiert, onSpeichern }) {
+function KindDetail({ kind, onZurueck, onKorrigiert, onSpeichern, passwort, clientId }) {
   const [markup, setMarkup] = useState(kind.text_markup || '');
   const [notiz, setNotiz] = useState(kind.korrektur_notiz || '');
   const [eigenschaften, setEigenschaften] = useState(kind.gewaehltEigenschaften || []);
   const [entfernteEigenschaften, setEntfernteEigenschaften] = useState([]);
   const [eigeneEigenschaft, setEigeneEigenschaft] = useState('');
   const [speichert, setSpeichert] = useState(false);
+  const [sperreUebernommen, setSperreUebernommen] = useState(false);
 
   useEffect(() => {
     setMarkup(kind.text_markup || '');
@@ -473,7 +521,32 @@ function KindDetail({ kind, onZurueck, onKorrigiert, onSpeichern }) {
     setEigenschaften(kind.gewaehltEigenschaften || []);
     setEntfernteEigenschaften([]);
     setEigeneEigenschaft('');
+    setSperreUebernommen(false);
   }, [kind.id]);
+
+  // Heartbeat hält die Sperre aktiv, solange die Karte offen ist; beim Verlassen
+  // (Zurück, Speichern oder Tab schließen) wird die Sperre wieder freigegeben.
+  useEffect(() => {
+    const heartbeat = setInterval(async () => {
+      try {
+        await sperreKind(kind.id, passwort, clientId);
+      } catch (err) {
+        if (err.status === 409) {
+          setSperreUebernommen(true);
+          clearInterval(heartbeat);
+        }
+      }
+    }, 3 * 60 * 1000);
+
+    const freigeben = () => entsperreKind(kind.id, passwort, clientId, true);
+    window.addEventListener('pagehide', freigeben);
+
+    return () => {
+      clearInterval(heartbeat);
+      window.removeEventListener('pagehide', freigeben);
+      entsperreKind(kind.id, passwort, clientId);
+    };
+  }, [kind.id, passwort, clientId]);
 
   function eigenschaftEntfernen(name) {
     const entfernt = eigenschaften.find(e => e.name === name);
@@ -518,6 +591,12 @@ function KindDetail({ kind, onZurueck, onKorrigiert, onSpeichern }) {
       </div>
 
       <div className="p-6 max-w-2xl mx-auto space-y-5">
+        {sperreUebernommen && (
+          <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-yellow-50 text-yellow-700 text-sm">
+            <span>⚠️ Diese Karte wird jetzt auch von jemand anderem bearbeitet. Speichern ist weiterhin möglich.</span>
+            <button onClick={() => setSperreUebernommen(false)} className="text-yellow-700/60 hover:text-yellow-700 shrink-0">✕</button>
+          </div>
+        )}
         <div>
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Gewählte Eigenschaften</p>
           <div className="flex flex-wrap gap-2">

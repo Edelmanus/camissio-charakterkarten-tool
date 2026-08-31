@@ -91,6 +91,38 @@ export function updateKorrektur(id, data, passwort) {
   }).then(r => r.ok ? r.json() : Promise.reject(new Error('Fehler beim Speichern')));
 }
 
+// --- Korrektur-Sperren (verhindern gleichzeitige Bearbeitung derselben Karte) ---
+export async function sperreKind(id, passwort, clientId, force = false) {
+  const res = await fetch(`${BASE}/korrektur/kinder/${id}/lock`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-korrektur-password': passwort },
+    body: JSON.stringify({ clientId, force }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const err = new Error(data.error || 'Karte gesperrt');
+    err.status = res.status;
+    err.laeuftAb = data.laeuftAb;
+    throw err;
+  }
+  return data; // { laeuftAb }
+}
+
+export function entsperreKind(id, passwort, clientId, keepalive = false) {
+  return fetch(`${BASE}/korrektur/kinder/${id}/lock`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', 'x-korrektur-password': passwort },
+    body: JSON.stringify({ clientId }),
+    keepalive,
+  }).catch(() => {});
+}
+
+export function getAktiveSperren(passwort) {
+  return fetch(`${BASE}/korrektur/locks`, {
+    headers: { 'x-korrektur-password': passwort },
+  }).then(r => r.ok ? r.json() : Promise.reject(new Error('Nicht autorisiert')));
+}
+
 // --- Fehler-Log ---
 // Best-effort-Meldung endgültig fehlgeschlagener Saves — wirft nie,
 // damit ein kaputtes Logging nicht selbst zum Problem wird.

@@ -83,7 +83,7 @@ npm run dev             # Port 5173 (proxyt /api/* → :3001)
 |---|---|
 | `App.jsx` | Session-Flow (CampAuswahl → GruppenApp / KorrekturPortal), API-State. `kindAktualisieren` speichert optimistisch (lokaler State sofort) und serialisiert Requests pro Kind-ID (Warteschlange), damit bei instabilem Camp-WLAN kein neuerer Stand von einem älteren überschrieben wird. Bei endgültigem Fehlschlag (nach Retry mit Backoff): Banner + Meldung an `/api/fehler-log` |
 | `CampAuswahl.jsx` | 3-Schritt-Login: Camp-Typ → Standort → Gruppe + Korrektur-Portal-Button |
-| `KorrekturPortal.jsx` | Passwortgeschützte Korrektur-Ansicht (alle fertigen Karten) |
+| `KorrekturPortal.jsx` | Passwortgeschützte Korrektur-Ansicht (alle fertigen Karten). Sperrt eine Karte während der Bearbeitung für andere Korrektoren (in-memory, anonym per `clientId`, Heartbeat alle 3 Min., Auto-Freigabe nach 15 Min. Inaktivität, Öffnen einer gesperrten Karte zeigt Warnung mit Override) |
 | `KorrigiertAnsicht.jsx` | Read-only Ansicht korrigierter Karten beim Gruppenleiter (inkl. Markup) |
 | `MarkupEditor.jsx` | ContentEditable-Editor mit Toolbar (Markieren/Durchstreichen) |
 | `KindEditor.jsx` | Haupt-Editor: Slider, Vorschläge, Texteditor, Export. Bei `korrigiert=true` → KorrigiertAnsicht. Score-Slider debounced (500ms); manuelle "Speichern"-Buttons oben & unten mit Live-Status |
@@ -164,6 +164,9 @@ Startseite (CampAuswahl)
 | `POST` | `/api/korrektur/login` | Passwort prüfen |
 | `GET` | `/api/korrektur/kinder` | Alle fertigen Karten (Header: `x-korrektur-password`) |
 | `PUT` | `/api/korrektur/kinder/:id` | Markup + Notiz + korrigiert speichern |
+| `GET` | `/api/korrektur/locks` | Aktive Karten-Sperren (`{ [kindId]: laeuftAb }`), für Badge-Polling |
+| `POST` | `/api/korrektur/kinder/:id/lock` | Karte sperren/Heartbeat (Body: `clientId`, `force`); `409` bei Fremd-Sperre |
+| `DELETE` | `/api/korrektur/kinder/:id/lock` | Eigene Sperre freigeben (Body: `clientId`) |
 | `POST` | `/api/fehler-log` | Client meldet einen endgültig gescheiterten Save (ohne Auth, best effort) |
 | `POST` | `/api/admin/login` | Admin-Passwort prüfen (`ADMIN_PASSWORT`, getrennt vom Korrektur-Passwort) |
 | `GET` | `/api/admin/fehler-log` | Fehler-Log lesen (Header: `x-admin-password`) — Ansicht unter `/admin` |

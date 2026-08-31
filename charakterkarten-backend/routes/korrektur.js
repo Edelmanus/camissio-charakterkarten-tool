@@ -13,6 +13,19 @@ function authMiddleware(req, res, next) {
   next();
 }
 
+// Sperren gegen gleichzeitige Bearbeitung derselben Karte — rein in-memory,
+// da einzelner PM2-Prozess. Anonym: nur clientId (pro Browser-Tab erzeugt),
+// kein Name. Läuft automatisch nach LOCK_DAUER_MS ab, wenn kein Heartbeat kommt.
+const LOCK_DAUER_MS = 15 * 60 * 1000;
+const sperren = new Map(); // kindId -> { clientId, laeuftAb }
+
+function sperreAktiv(id) {
+  const s = sperren.get(id);
+  if (!s) return null;
+  if (Date.now() > s.laeuftAb) { sperren.delete(id); return null; }
+  return s;
+}
+
 // POST /api/korrektur/login — Passwort prüfen
 router.post('/login', (req, res) => {
   const { passwort } = req.body;
@@ -79,6 +92,43 @@ router.put('/kinder/:id', authMiddleware, (req, res) => {
   );
 
   res.json(parseKind(db.prepare('SELECT * FROM kinder WHERE id = ?').get(id)));
+});
+
+// GET /api/korrektur/locks — alle aktuell aktiven Sperren (für Badge-Polling in der Kartenliste)
+router.get('/locks', authMiddleware, (req, res) => {
+  const aktiv = {};
+  for (const id of sperren.keys()) {
+    const s = sperreAktiv(id);
+    if (s) aktiv[id] = s.laeuftAb;
+  }
+  res.json(aktiv);
+});
+
+// POST /api/korrektur/kinder/:id/lock — Karte sperren (Öffnen) oder Sperre erneuern (Heartbeat)
+router.post('/kinder/:id/lock', authMiddleware, (req, res) => {
+  const { id } = req.params;
+  const { clientId, force } = req.body;
+  if (!clientId) return res.status(400).json({ error: 'clientId fehlt' });
+
+  const bestehend = sperreAktiv(id);
+  if (bestehend && bestehend.clientId !== clientId && !force) {
+    return res.status(409).json({ error: 'Karte wird bereits bearbeitet', laeuftAb: bestehend.laeuftAb });
+  }
+
+  const laeuftAb = Date.now() + LOCK_DAUER_MS;
+  sperren.set(id, { clientId, laeuftAb });
+  res.json({ laeuftAb });
+});
+
+// DELETE /api/korrektur/kinder/:id/lock — Sperre freigeben (nur eigene)
+router.delete('/kinder/:id/lock', authMiddleware, (req, res) => {
+  const { id } = req.params;
+  const { clientId } = req.body;
+  const bestehend = sperren.get(id);
+  if (bestehend && bestehend.clientId === clientId) {
+    sperren.delete(id);
+  }
+  res.json({ ok: true });
 });
 
 function safeJSON(str, fallback) {
